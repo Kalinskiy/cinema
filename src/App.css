@@ -1,3 +1,10 @@
+body {
+  /*background: rgb(6,4,27);*/
+  /*background: radial-gradient(circle, rgb(53, 46, 139) 0%, rgb(86, 72, 158) 78%, rgb(98, 83, 179) 100%);*/
+  background:#1A143B;
+
+}
+
 .App {
   text-align: center;
 }

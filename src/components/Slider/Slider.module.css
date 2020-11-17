@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+
+
+.title{
+    display: flex;
+    justify-content: center;
+    font-size: 3.5em;
+    color:#F8104D;
+    font-family: 'Goldman', cursive;
+    margin-bottom:20px;
+
+}
+.item {
+    transform: scale(0.7);
+    position: relative;
+}
+.button button {
+    font-weight: 800;
+    font-size: 1.3em;
+    width: 300px;
+    line-height: 4em;
+    background-color: #F8104D;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: transform .1s;
+    position: absolute;
+    top: 40%;  /* position the top  edge of the element at the middle of the parent */
+    left: 50%; /* position the left edge of the element at the middle of the parent */
+    transform: translate(-50%, -50%);
+    opacity: 0.4;
+    transition: opacity .3s;
+}
+.button button:hover {
+    opacity: 1;
+}

@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    color: white;
+    flex-direction: row;
+    margin: 20px;
+    background-color: #281F55;
+
+}
+
+.row1 {
+    width: 30%;
+}
+
+.row2 {
+    width: 70%;
+    position: relative;
+}
+
+.overview, .watch {
+    margin-top: 50px;
+}
+
+.watch button {
+    font-weight: 800;
+    width: 200px;
+    line-height: 3em;
+    background-color: #F8104D;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: transform .1s;
+}
+
+.watch button:hover {
+    transform: scale(1.12);
+}
+
+
+.release {
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: lightgray;
+    font-style: italic;
+}
+
+.img img {
+    width: 250px;
+}
