@@ -30,6 +30,7 @@ const Search = React.memo(() => {
                placeholder={'Search...'}
                onKeyPress={onKeyPressHandler}/>
 
+
     </div>
 })
 
