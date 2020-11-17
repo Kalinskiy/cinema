@@ -11,6 +11,7 @@ const Navbar = () => {
                 <NavLink to={'/rated'}>Rated</NavLink>
                 <NavLink to={'/upcoming'}>Upcoming</NavLink>
                 <NavLink to={''}>Serials</NavLink>
+
             </div>
 
         </div>

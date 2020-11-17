@@ -30,6 +30,7 @@ const PopularMovies = () => {
             }
 
 
+
         </div>
     );
 };
