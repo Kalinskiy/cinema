@@ -32,25 +32,13 @@ let initialState: initialStateType = {
 
 //----------------------------------------------------------------------------------------------------------------------
 //Reducer
-const moviesReducer = (state = initialState, action: any) => {
+const searchReducer = (state = initialState, action: any) => {
 
     switch (action.type) {
-        case 'MOVIES/POPULAR-MOVIES': {
-            return {...state, popular: action.payload.movies}
-        }
-        case 'MOVIES/TOP-MOVIES': {
-            return {...state, top: action.payload.movies}
-        }
-        case 'MOVIES/UPCOMING-MOVIE': {
-            return {...state, upcoming: action.payload.movies}
-        }
-        case 'MOVIES/SET-STATUS': {
-            return {...state, status: action.payload.status}
-        }
-        case 'MOVIES/SET-SEARCH-NAME': {
+        case 'SEARCH/SET-SEARCH-NAME': {
             return {...state, searchName: action.payload.searchName}
         }
-        case 'MOVIES/SEARCH-MOVIE': {
+        case 'SEARCH/SEARCH-MOVIE': {
             return {...state, search: action.payload.search}
         }
         case 'SEARCH/SET-TOTAL-PAGE': {
@@ -73,10 +61,6 @@ const moviesReducer = (state = initialState, action: any) => {
 
 //----------------------------------------------------------------------------------------------------------------------
 // Actions
-export const getPopularMovies = (movies: any) => ({type: 'MOVIES/POPULAR-MOVIES', payload: {movies}} as const);
-export const getTopMovies = (movies: any) => ({type: 'MOVIES/TOP-MOVIES', payload: {movies}} as const);
-export const getUpcomingMovies = (movies: any) => ({type: 'MOVIES/UPCOMING-MOVIE', payload: {movies}} as const);
-export const setMovieStatus = (status: StatusType) => ({type: 'MOVIES/SET-STATUS', payload: {status}} as const);
 export const searchMovies = (search: any) => ({type: 'MOVIES/SEARCH-MOVIE', payload: {search}} as const);
 export const setSearchName = (searchName: any) => ({type: 'MOVIES/SET-SEARCH-NAME', payload: {searchName}} as const);
 export const setTotalPage = (pages: number) => ({type: 'SEARCH/SET-TOTAL-PAGE', payload: {pages}} as const);
@@ -89,41 +73,6 @@ export const setNextPage = (page: number) => ({type: 'SEARCH/SET-NEXT-PAGE', pay
 //Thunks
 
 
-export const getPopularMoviesTC = () => async (dispatch: any) => {
-    try {
-        const response = await moviesAPI.getPopularMovies()
-        dispatch(getPopularMovies(response.results))
-        dispatch(setMovieStatus('watch'))
-
-
-    } catch (e) {
-        console.log(e)
-
-    }
-}
-export const getTopMoviesTC = () => async (dispatch: any) => {
-    try {
-        const response = await moviesAPI.getTopMovies()
-        dispatch(getTopMovies(response.results))
-        dispatch(setMovieStatus('watch'))
-
-
-    } catch (e) {
-        console.log(e)
-
-    }
-}
-export const getUpcomingMoviesTC = () => async (dispatch: any) => {
-    try {
-        const response = await moviesAPI.getUpcomingMovies()
-        dispatch(getUpcomingMovies(response.results))
-        dispatch(setMovieStatus('getTicket'))
-
-    } catch (e) {
-        console.log(e)
-
-    }
-}
 export const searchMovieTC = (query: string, page: number) => async (dispatch: any) => {
     try {
         const response = await moviesAPI.searchMovie(query, page)
@@ -139,4 +88,4 @@ export const searchMovieTC = (query: string, page: number) => async (dispatch: a
 }
 
 
-export default moviesReducer;
+export default searchReducer;

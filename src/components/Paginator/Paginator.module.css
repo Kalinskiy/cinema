@@ -1,0 +1,39 @@
+.container {
+    background-color: #281F55;
+    height: 50px;
+    width: 1160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:20px;
+
+
+
+}
+
+
+.container button {
+    background-color: #F8104D;
+    border: none;
+    color: #ffffff;
+    padding: 9px 10px;
+    cursor: pointer;
+}
+
+.pageNumber {
+    padding: 5px;
+    background-color: #1A143B;
+    border: 1px solid #ffffff;
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.page:active {
+    background-color: #F8104D;
+}
+
+.selectedPage {
+
+    color: rgba(245, 175, 194, 0.72);
+}

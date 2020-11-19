@@ -4,6 +4,7 @@
     flex-direction: row;
     margin: 20px;
     background-color: #281F55;
+    position: relative;
 
 }
 
@@ -16,8 +17,9 @@
     position: relative;
 }
 
-.overview, .watch {
+.overview {
     margin-top: 50px;
+    padding-right: 30px;
 }
 
 .watch button {
@@ -29,6 +31,9 @@
     border: none;
     cursor: pointer;
     transition: transform .1s;
+    font-family: 'Goldman', cursive;
+    position: absolute;
+    bottom: 30px;
 }
 
 .watch button:hover {
@@ -46,4 +51,5 @@
 
 .img img {
     width: 250px;
+    height: 375px;
 }

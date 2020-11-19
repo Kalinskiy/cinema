@@ -30,7 +30,7 @@ function App() {
                 <Route path='/rated' render={() => <TopMovies/>}/>
                 <Route path='/upcoming' render={() => <UpcomingMovies/>}/>
                 <Route path='/popular' render={() => <PopularMovies />}/>
-                {/*<Route exact path={'/'} render={() => <Redirect to="/home"/>}/>*/}
+                <Route exact path={'/'} render={() => <Redirect to="/home"/>}/>
             </div>
         </BrowserRouter>
     </>

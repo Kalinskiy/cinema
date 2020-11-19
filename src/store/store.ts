@@ -1,12 +1,12 @@
 import {applyMiddleware, combineReducers, compose, createStore} from "redux";
 import thunkMiddleWare from 'redux-thunk';
-import authReducer from "./auth-reducer";
 import moviesReducer from "./topMovies-reducer";
+import searchReducer from "./search-reducer";
 
 
 const reducers = combineReducers({
-    auth:authReducer,
-    movies:moviesReducer
+    movies:moviesReducer,
+    search:searchReducer,
 
 })
 

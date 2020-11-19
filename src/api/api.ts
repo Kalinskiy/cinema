@@ -20,5 +20,9 @@ export const moviesAPI = {
     getUpcomingMovies(){
         return instance.get(`/movie/upcoming?api_key=${apiKey}`).then(res => res.data)
     },
+    searchMovie(query = ' ',page=1){
+        return instance.get(`/search/movie?api_key=${apiKey}&query=${query}&page=${page}`).then(res=>res.data)
+    },
+
 }
 

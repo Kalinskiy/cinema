@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Goldman:wght@400;700&display=swap');
+
 
 
 .title{
@@ -30,6 +30,7 @@
     transform: translate(-50%, -50%);
     opacity: 0.4;
     transition: opacity .3s;
+    font-family: 'Goldman', cursive;
 }
 .button button:hover {
     opacity: 1;

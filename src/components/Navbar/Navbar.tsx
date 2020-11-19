@@ -10,8 +10,6 @@ const Navbar = () => {
                 <NavLink to={'/popular'}>Popular</NavLink>
                 <NavLink to={'/rated'}>Rated</NavLink>
                 <NavLink to={'/upcoming'}>Upcoming</NavLink>
-                <NavLink to={''}>Serials</NavLink>
-
             </div>
 
         </div>

@@ -1,9 +1,10 @@
 import React from 'react';
 import style from './Slider.module.css'
+ // node_modules/react-leaf-carousel/src/components/InfiniteCarousel.css'
 
 // @ts-ignore
 import InfiniteCarousel from 'react-leaf-carousel';
-import img1 from '../../assets/1.jpg'
+
 import { NavLink } from 'react-router-dom';
 
 type SliderPropsType = {
@@ -30,7 +31,7 @@ const Slider = (props: SliderPropsType) => {
                         },
                     },
                 ]}
-                dots={false}
+                dots={true}
                 showSides={true}
                 sidesOpacity={0.5}
                 sideSize={0.5}
