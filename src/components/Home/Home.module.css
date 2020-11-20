@@ -8,3 +8,8 @@
     align-items: center;
     justify-content: center;
 }
+.searchError {
+    color:#ffffff;
+    font-size: 1.4em;
+    z-index: 2;
+}

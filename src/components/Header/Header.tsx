@@ -1,25 +1,31 @@
 import React from 'react';
 import style from './Header.module.css'
 import logo from '../../assets/logo2.png'
-import Navbar from "../Navbar/Navbar";
+
 import {NavLink} from 'react-router-dom';
+import Search from "../../Search/Search";
 
 const Header = () => {
+
+
     return (
         <div className={style.container}>
-            {/*logo*/}
-            <div className={style.wrapper}>
-                <NavLink to={'/home'}>
-                    <div className={style.logo}>
-                        <img src={logo} alt=""/>
-                    </div>
+
+
+            <div className={style.logo}>
+                <NavLink to={'/'}>
+                    <img src={logo} alt=""/>
                 </NavLink>
 
-                <Navbar/>
+            </div>
+            <div>
+                <Search/>
             </div>
 
+
         </div>
-    );
+    )
+        ;
 };
 
 export default Header;

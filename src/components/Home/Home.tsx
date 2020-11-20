@@ -7,25 +7,26 @@ import {AppStateType} from "../../store/store";
 import 'react-awesome-slider/dist/styles.css';
 import Slider from "../Slider/Slider";
 import Search from "../../Search/Search";
-import Movie from "../common/Movie/Movie";
+import Movie from "../common/MovieComponent/Movie";
 import Paginator from "../Paginator/Paginator";
-import {searchMovieTC, setCurrentPage} from "../../store/topMovies-reducer";
+import {searchMovieTC, setCurrentPage} from "../../store/search-reducer";
+import Preloader from '../common/Preloader/Preloader';
+import {useHistory} from "react-router-dom";
 
 
 const Home = () => {
-    const popularMovies = useSelector<AppStateType, Array<any>>(state => state.movies.popular)
-    const topMovies = useSelector<AppStateType, Array<any>>(state => state.movies.top)
+    const movies = useSelector<AppStateType, Array<any>>(state => state.movies.movies)
     const upcomingMovies = useSelector<AppStateType, Array<any>>(state => state.movies.upcoming)
-    const searchMovies = useSelector<AppStateType, Array<any>>(state => state.movies.search)
-    const totalPage = useSelector<AppStateType, number | null>(state => state.movies.totalPages)
-    let currentPage = useSelector<AppStateType, number | null>(state => state.movies.currentPage)
-    const searchName = useSelector<AppStateType, string>(state => state.movies.searchName)
+    const popularMovies = useSelector<AppStateType, Array<any>>(state => state.movies.popular)
+    const searchMovies = useSelector<AppStateType, Array<any>>(state => state.search.search)
+    const totalPage = useSelector<AppStateType, number | null>(state => state.search.totalPages)
+    let currentPage = useSelector<AppStateType, number | null>(state => state.search.currentPage)
+    const searchName = useSelector<AppStateType, string>(state => state.search.searchName)
+    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
+    const searchError = useSelector<AppStateType, string>(state => state.search.searchError)
 
-    useEffect(() => {
-        if (currentPage) {
-            dispatch(searchMovieTC(searchName, currentPage))
-        }
-    }, [currentPage])
+    const history = useHistory()
+
 
 
     const [images, setImages] = useState<string[]>([])
@@ -33,36 +34,44 @@ const Home = () => {
 
     const dispatch = useDispatch()
     useEffect(() => {
-        if (popularMovies.length && topMovies.length && upcomingMovies.length) {
+        if (popularMovies.length && movies.length && upcomingMovies.length) {
             const imgArray =
                 [
                     `https://image.tmdb.org/t/p/w500/${upcomingMovies[0].poster_path}`,
-                    `https://image.tmdb.org/t/p/w500/${topMovies[0].poster_path}`,
+                    `https://image.tmdb.org/t/p/w500/${movies[0].poster_path}`,
                     `https://image.tmdb.org/t/p/w500/${popularMovies[0].poster_path}`
                 ]
             setImages(imgArray)
         }
 
-    }, [popularMovies, topMovies, upcomingMovies])
+    }, [popularMovies, movies, upcomingMovies])
+
 
     return (
+
         <div className={style.container}>
-            <Search/>
+
             {!!images.length && <Slider imgArray={images}/>}
-            {searchMovies.length && searchMovies.map(e =>
+            <Paginator currentPage={currentPage ? currentPage : 0} totalPage={totalPage ? totalPage : 0}
+                       pagePortion={10}
+                       changePage={(page) => {
+
+                           dispatch(searchMovieTC(searchName, page))
+                       }
+                       }/>
+            {!!searchMovies.length && searchMovies.map(e =>
                 <Movie key={e.id}
                        release_date={e.release_date}
                        title={e.original_title}
                        overview={e.overview}
                        poster_path={e.poster_path}
+                       vote_average={e.vote_average}
+                       id={e.id}
                 />)}
-            <Paginator currentPage={currentPage ? currentPage : 0} totalPage={totalPage ? totalPage : 0}
-                       changePage={(page) => {
-                           dispatch(setCurrentPage(page))
-                       }
-                       }/>
+
 
         </div>
+
     );
 };
 

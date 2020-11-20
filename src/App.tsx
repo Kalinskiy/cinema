@@ -2,23 +2,24 @@ import React, {useEffect} from 'react';
 import './App.css';
 import style from './App.module.css'
 import Header from "./components/Header/Header";
-import {BrowserRouter, Redirect, Route} from "react-router-dom";
-import PopularMovies from "./components/PopularMovies/PopularMovies";
-import TopMovies from "./components/TopMovies/TopMovies";
-import UpcomingMovies from "./components/UpcomingMovies/UpcomingMovies";
-import Home from "./components/Home/Home";
-import {getPopularMoviesTC, getTopMoviesTC, getUpcomingMoviesTC} from "./store/topMovies-reducer";
-import {useDispatch} from "react-redux";
+import {BrowserRouter, Route} from "react-router-dom";
+import {getTopMoviesTC} from "./store/movies-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "./store/store";
+import Movies from "./components/Movies/Movies";
+import MovieCard from "./components/common/MovieCard/MovieCard";
 
 
 function App() {
+    let page = useSelector<AppStateType, number>(state => state.search.currentPage)
+
+
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getUpcomingMoviesTC())
-        dispatch(getPopularMoviesTC())
-        dispatch(getTopMoviesTC())
+        dispatch(getTopMoviesTC(page))
 
     }, [])
+
     return <>
         <BrowserRouter>
             <Header/>
@@ -26,11 +27,9 @@ function App() {
             <div className={style.container}>
 
 
-                <Route path='/home' render={() => <Home/>}/>
-                <Route path='/rated' render={() => <TopMovies/>}/>
-                <Route path='/upcoming' render={() => <UpcomingMovies/>}/>
-                <Route path='/popular' render={() => <PopularMovies />}/>
-                <Route exact path={'/'} render={() => <Redirect to="/home"/>}/>
+                <Route exact path='/' render={() => <Movies/>}/>
+                <Route path='/movie/:id' render={() => <MovieCard/>}/>
+
             </div>
         </BrowserRouter>
     </>

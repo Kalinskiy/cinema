@@ -31,13 +31,15 @@ const Slider = (props: SliderPropsType) => {
                         },
                     },
                 ]}
-                dots={true}
+                dots={false}
                 showSides={true}
                 sidesOpacity={0.5}
                 sideSize={0.5}
                 slidesToScroll={1}
                 slidesToShow={1}
                 scrollOnDevice={true}
+                // autoCycle={true}
+                // cycleInterval={3000}
 
             >
                 <div className={style.item}>
@@ -57,7 +59,7 @@ const Slider = (props: SliderPropsType) => {
                         src={props.imgArray[1]}
                     />
                     <div className={style.button}>
-                       <NavLink to={'/rated'} ><button>TO THE LIST</button></NavLink>
+                       <NavLink to={'/movies'} ><button>TO THE LIST</button></NavLink>
                     </div>
                 </div>
                 <div className={style.item}>

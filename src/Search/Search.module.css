@@ -2,16 +2,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    position: relative;
+
 }
 
 .search input {
-    width: 40%;
-    line-height: 2em;
+    width: 200px;
+    height: 20px;
     background-color: rgba(84, 70, 160, 0.66);
     border: none;
     color: #ffffff;
     padding: 5px;
+
+
 }
 
 .search input::placeholder {
@@ -27,15 +30,19 @@
     color: transparent;
 }
 
-
-.search button {
-    width: 100px;
-    line-height: 2em;
-    background-color: #F8104D;
+.clearSearch {
+    position: absolute;
+    right: 3px;
     color: #ffffff;
-    border: none;
+    opacity: 0.5;
     cursor: pointer;
-    padding: 5px;
-    font-weight: 600;
-    font-family: 'Goldman', cursive;
+    top: 50%;
+    left: 93%;
+    transform: translate(-50%, -50%);
+
+
+}
+.clearSearch:hover{
+    opacity: 1;
+
 }

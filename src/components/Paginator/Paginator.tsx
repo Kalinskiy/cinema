@@ -1,16 +1,16 @@
 import React from 'react';
 import style from './Paginator.module.css'
-import {useDispatch, useSelector} from "react-redux";
-import {AppStateType} from "../../store/store";
-import {setNextPage, setPrevPage} from "../../store/topMovies-reducer";
+import {useDispatch} from "react-redux";
 import cn from 'classnames'
+import {setCurrentPage, setNextPage, setPrevPage} from "../../store/search-reducer";
 
 type PaginatorPropsType = {
     totalPage: number
     currentPage: number
     changePage: (page: number) => void
+    pagePortion: number
 }
-const Paginator = (props: PaginatorPropsType) => {
+const Paginator = ({pagePortion = 10, ...props}: PaginatorPropsType) => {
     const totalPageArray = Array.from(Array(props.totalPage).keys())
 
     const dispatch = useDispatch()
@@ -24,17 +24,26 @@ const Paginator = (props: PaginatorPropsType) => {
             dispatch(setNextPage(props.currentPage))
     }
 
+    const showMaxPages = props.currentPage + pagePortion
 
     return (
         <>
             {!!totalPageArray.length
             && <div className={style.container}>
-
+                {props.currentPage > pagePortion
+                &&
+                <button onClick={() => dispatch(setCurrentPage(1))}>
+                    &lt; &lt;
+                </button>
+                }
                 <button onClick={prevButtonClick}>
                     &lt;
                 </button>
+
+                <div className={style.pages}>
                 {totalPageArray.map((i, index) => {
-                    console.log('eawas:', index)
+                    if (index + 1 < showMaxPages - pagePortion || index + 1 > showMaxPages) return null
+                    // if(props.currentPage + pagePortion < props.totalPage)
                     return <div onClick={() => {
                         props.changePage(index + 1)
                     }}>
@@ -45,9 +54,16 @@ const Paginator = (props: PaginatorPropsType) => {
                         </div>
                     </div>
                 })}
+                </div>
                 <button onClick={nextButtonClick}>
                     &gt;
                 </button>
+                {(props.totalPage / pagePortion) >1
+                &&
+                <button onClick={() => dispatch(setCurrentPage(props.totalPage))}>
+                    &gt;  &gt;
+                </button>
+                }
 
             </div>}
         </>

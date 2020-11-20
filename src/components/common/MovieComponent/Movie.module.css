@@ -37,9 +37,8 @@
 }
 
 .watch button:hover {
-    transform: scale(1.12);
+    transform: scale(1.02);
 }
-
 
 .release {
     position: absolute;

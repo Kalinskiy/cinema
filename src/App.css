@@ -49,7 +49,8 @@ body {
     /*  editting doesn`t work, color still the same*/
 }
 
-/*#infinite-carousel .InfiniteCarouselSlide {*/
-/*    width: 200px !important;*/
-/*    background-color: red*/
-/*}*/
+.InfiniteCarousel {
+    margin:0 auto;
+    width: 400px;
+
+}

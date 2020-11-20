@@ -1,12 +1,10 @@
 .container {
     background-color: #281F55;
     height: 50px;
-    width: 1160px;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin:20px;
-
+    margin: 20px;
 
 
 }
@@ -19,7 +17,10 @@
     padding: 9px 10px;
     cursor: pointer;
 }
-
+.pages{
+    display: flex;
+    margin:0 10px;
+}
 .pageNumber {
     padding: 5px;
     background-color: #1A143B;
@@ -29,11 +30,15 @@
     cursor: pointer;
 }
 
-.page:active {
+.pageNumber:hover {
+    background-color: #F8104D;
+}
+
+.pageNumber:active {
     background-color: #F8104D;
 }
 
 .selectedPage {
+    background-color: #F8104D;
 
-    color: rgba(245, 175, 194, 0.72);
 }

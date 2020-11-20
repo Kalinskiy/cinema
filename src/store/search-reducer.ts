@@ -1,28 +1,23 @@
 import {moviesAPI} from "../api/api";
+import {isInitialized} from "./app-reducer";
+import {getMovies} from "./movies-reducer";
 
-export type StatusType = 'watch' | 'getTicket'
 type initialStateType = {
-    popular: [],
-    top: [],
-    upcoming: [],
-    status: StatusType | null,
     search: [],
     searchName: string,
+    searchError: boolean
     totalPages: number | null,
-    currentPage: number | null
+    currentPage: number | null,
 
 
 }
 
 let initialState: initialStateType = {
-    popular: [],
-    top: [],
-    upcoming: [],
-    status: 'watch',
     search: [],
+    searchError: false,
     searchName: '',
     totalPages: null,
-    currentPage: null
+    currentPage: 1
 
 
 }
@@ -45,7 +40,6 @@ const searchReducer = (state = initialState, action: any) => {
             return {...state, totalPages: action.payload.pages}
         }
         case 'SEARCH/SET-CURRENT-PAGE': {
-            console.log('asddsa', action.payload.page)
             return {...state, currentPage: action.payload.page}
         }
         case 'SEARCH/SET-PREVIOUS-PAGE': {
@@ -54,6 +48,9 @@ const searchReducer = (state = initialState, action: any) => {
         case 'SEARCH/SET-NEXT-PAGE': {
             return {...state, currentPage: action.payload.page + 1,}
         }
+        case 'SEARCH/SET-SEARCH-ERROR': {
+            return {...state, searchError: action.payload.error}
+        }
         default:
             return state;
     }
@@ -61,12 +58,13 @@ const searchReducer = (state = initialState, action: any) => {
 
 //----------------------------------------------------------------------------------------------------------------------
 // Actions
-export const searchMovies = (search: any) => ({type: 'MOVIES/SEARCH-MOVIE', payload: {search}} as const);
-export const setSearchName = (searchName: any) => ({type: 'MOVIES/SET-SEARCH-NAME', payload: {searchName}} as const);
+export const setSearchName = (searchName: any) => ({type: 'SEARCH/SET-SEARCH-NAME', payload: {searchName}} as const);
+export const searchMovies = (search: any) => ({type: 'SEARCH/SEARCH-MOVIE', payload: {search}} as const);
 export const setTotalPage = (pages: number) => ({type: 'SEARCH/SET-TOTAL-PAGE', payload: {pages}} as const);
 export const setCurrentPage = (page: number) => ({type: 'SEARCH/SET-CURRENT-PAGE', payload: {page}} as const);
 export const setPrevPage = (page: number) => ({type: 'SEARCH/SET-PREVIOUS-PAGE', payload: {page}} as const);
 export const setNextPage = (page: number) => ({type: 'SEARCH/SET-NEXT-PAGE', payload: {page}} as const);
+export const setSearchError = (error: boolean) => ({type: 'SEARCH/SET-SEARCH-ERROR', payload: {error}} as const);
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -74,16 +72,18 @@ export const setNextPage = (page: number) => ({type: 'SEARCH/SET-NEXT-PAGE', pay
 
 
 export const searchMovieTC = (query: string, page: number) => async (dispatch: any) => {
+
     try {
         const response = await moviesAPI.searchMovie(query, page)
-        dispatch(searchMovies(response.results))
+        dispatch(getMovies(response.results))
         dispatch(setTotalPage(response.total_pages))
         dispatch(setCurrentPage(response.page))
+        dispatch(isInitialized(false))
+        dispatch(setSearchError(false))
 
 
     } catch (e) {
-        console.log(e)
-
+        dispatch(setSearchError(true))
     }
 }
 
