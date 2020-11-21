@@ -30,7 +30,7 @@ const Search = React.memo(() => {
 
         }
     }
-    const clearSearch = () => {
+     const clearSearch = () => {
         dispatch(getTopMoviesTC(page))
         dispatch(setSearchName(''))
     }

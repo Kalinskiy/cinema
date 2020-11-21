@@ -25,9 +25,11 @@
     padding: 5px;
     background-color: #1A143B;
     border: 1px solid #ffffff;
-    width: 20px;
+    width: max-content;
+    min-width: 25px;
     text-align: center;
     cursor: pointer;
+
 }
 
 .pageNumber:hover {

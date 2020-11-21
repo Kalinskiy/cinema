@@ -15,7 +15,6 @@ type TopMovieType = {
 const Movie = (props: TopMovieType) => {
 
 
-
     return (
         <div className={style.container}>
 
@@ -36,12 +35,12 @@ const Movie = (props: TopMovieType) => {
                     {props.overview}
                 </div>
                 <div className={style.voteAverage}>
-                    {props.vote_average}
+                  score:  {props.vote_average}
 
                 </div>
                 <div className={style.watch}>
                     <button className={style.watchButton}>
-                       WATCH
+                        WATCH
                     </button>
                 </div>
                 <div className={style.release}>

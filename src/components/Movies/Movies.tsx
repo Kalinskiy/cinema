@@ -24,8 +24,13 @@ const Movies = () => {
 
 
     useEffect(() => {
-        dispatch(getTopMoviesTC(currentPage))
-        // dispatch(searchMovieTC(searchName, 1))
+        if(searchName.length){
+            dispatch(searchMovieTC(searchName, currentPage))
+        }
+       else {
+            dispatch(getTopMoviesTC(currentPage))
+        }
+
     }, [currentPage])
 
     useEffect(() => {

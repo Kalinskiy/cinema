@@ -1,18 +1,25 @@
 .search {
     display: flex;
-    justify-content: center;
     align-items: center;
     position: relative;
+    width:auto;
+    justify-content: flex-end;
 
 }
 
 .search input {
-    width: 200px;
+    display: flex;
+    width: 150px;
     height: 20px;
     background-color: rgba(84, 70, 160, 0.66);
     border: none;
     color: #ffffff;
     padding: 5px;
+    transition: width .4s;
+    border-radius: 5px;
+
+
+
 
 
 }
@@ -20,10 +27,14 @@
 .search input::placeholder {
     color: #ffffff;
     padding: 5px;
+    font-style: italic;
 }
 
-.search input:focus {
+.search input:focus, .search input:active {
     outline: none;
+    width:250px;
+
+
 }
 
 .search input:focus::placeholder {
@@ -44,5 +55,4 @@
 }
 .clearSearch:hover{
     opacity: 1;
-
 }
