@@ -38,11 +38,13 @@ const Movie = (props: TopMovieType) => {
                   score:  {props.vote_average}
 
                 </div>
+                <NavLink to={`/movie/${props.id}`}>
                 <div className={style.watch}>
                     <button className={style.watchButton}>
                         WATCH
                     </button>
                 </div>
+                </NavLink>
                 <div className={style.release}>
                     {props.release_date}
                 </div>

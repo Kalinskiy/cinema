@@ -72,7 +72,7 @@ export const setSearchError = (error: boolean) => ({type: 'SEARCH/SET-SEARCH-ERR
 
 
 export const searchMovieTC = (query: string, page: number) => async (dispatch: any) => {
-
+    dispatch(isInitialized(true))
     try {
         const response = await moviesAPI.searchMovie(query, page)
         dispatch(getMovies(response.results))
@@ -84,6 +84,9 @@ export const searchMovieTC = (query: string, page: number) => async (dispatch: a
 
     } catch (e) {
         dispatch(setSearchError(true))
+    }
+    finally {
+        dispatch(isInitialized(false))
     }
 }
 

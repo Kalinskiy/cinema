@@ -18,7 +18,7 @@ const Movies = () => {
     const movies = useSelector<AppStateType, Array<any>>(state => state.movies.movies)
     const totalPage = useSelector<AppStateType, number | null>(state => state.search.totalPages)
     let currentPage = useSelector<AppStateType, number>(state => state.search.currentPage)
-    const searchMovies = useSelector<AppStateType, Array<any>>(state => state.search.search)
+
     const searchName = useSelector<AppStateType, string>(state => state.search.searchName)
 
 
@@ -47,7 +47,6 @@ const Movies = () => {
                        changePage={(page) => {
 
                            dispatch(setCurrentPage( page))
-                           // dispatch(searchMovieTC(searchName, page))
                        }
                        }/>}
 

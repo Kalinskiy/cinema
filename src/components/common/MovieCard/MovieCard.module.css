@@ -1,0 +1,110 @@
+.container {
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+    width: 1160px;
+    margin: 20px auto;
+    background-color: #281F55;
+    border-radius: 5px;
+}
+
+.column2 {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    margin: 0 30px 30px 30px;
+
+}
+
+.photo {
+    padding: 10px;
+
+}
+
+.photo img {
+    width: 300px;
+ 
+
+}
+
+.title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+
+}
+
+.overview {
+    padding: 10px 0;
+}
+
+.descriptions {
+
+}
+
+.descriptionsItem {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    padding: 10px 0;
+
+}
+
+.descriptionContent {
+
+
+}
+
+.descriptionTitle {
+    width: 180px;
+}
+
+.watch button {
+    font-weight: 800;
+    width: 220px;
+    line-height: 3em;
+    background-color: #F8104D;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: transform .1s;
+    font-family: 'Goldman', cursive;
+    bottom: 30px;
+    margin-top: 20px;
+
+}
+
+.watch button:hover {
+    transform: scale(1.02);
+}
+
+.images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.image {
+    display: flex;
+    flex-direction: row;
+    margin:10px 10px 5px 0;
+
+
+}
+
+.images img {
+    width: 220px;
+
+
+}
+
+.galleryTitle {
+    /*display: flex;*/
+    /*text-align: center;*/
+    /*padding: 10px 0;*/
+    /*font-size: 24px;*/
+    /*font-weight: 500;*/
+}
+.allGallery{
+    color:#ffffff;
+    text-align: center;
+}

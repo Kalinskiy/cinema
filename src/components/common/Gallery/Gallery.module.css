@@ -1,0 +1,39 @@
+.container {
+    color: white;
+    width:1200px;
+    margin:0 auto;
+    background-color: #281F55;
+    padding: 30px;
+}
+.images {
+
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+
+}
+.images img {
+    width: 300px;
+}
+.back{
+    display: flex;
+    justify-content: center;
+}
+.back button{
+    font-weight: 800;
+    width: 200px;
+    line-height: 3em;
+    background-color: #F8104D;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+    transition: transform .1s;
+    font-family: 'Goldman', cursive;
+    margin-top: 20px;
+
+}
+
+.back button:hover {
+    transform: scale(1.02);
+}

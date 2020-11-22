@@ -1,0 +1,18 @@
+.container {
+    width: 1160px;
+    margin: 0 auto;
+    align-items: stretch;
+}
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.title{
+    text-align: center;
+    font-size: 20px;
+    color:#ffffff;
+    text-transform: uppercase;
+}
