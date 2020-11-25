@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import style from './SimilarMovies.module.css'
 import {MovieResponseType} from "../../../api/api";
 import SimilarMovie from "./SimilarMovie/SimilarMovie";
