@@ -10,12 +10,12 @@ import Preloader from "../Preloader/Preloader";
 const Gallery = () => {
     const dispatch = useDispatch()
     const params = useParams<{ id: string }>()
-    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
+    const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
     const images = useSelector<AppStateType, Array<MovieImagesArrayResponseType>>(state => state.movies.images)
     useEffect(() => {
         dispatch(getMovieImagesTC(parseInt(params.id)))
     }, [])
-    if(initialized){
+    if (initialized) {
         return <Preloader/>
     }
     return (

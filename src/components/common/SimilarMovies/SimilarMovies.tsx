@@ -20,6 +20,7 @@ const SimilarMovies = (props: SimilarMoviesPropsType) => {
                         return <SimilarMovie
                             title={item.title}
                             image={item.poster_path}
+                            id={item.id}
                         />
                     })
                 }

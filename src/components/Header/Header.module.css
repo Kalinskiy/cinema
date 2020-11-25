@@ -3,15 +3,14 @@
     background-color: #281F55;
     padding: 5px 0;
     justify-content: space-around;
-
     display: flex;
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 .wrapper {
     display: flex;
     align-items: center;
-    width:1200px;
+    width: 1200px;
     justify-content: center;
 }
 
@@ -30,6 +29,23 @@
 }
 
 .search {
+    position: relative;
     width: 50%;
     margin-left: 390px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.filter {
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    background-color: #F8104D;
+    border: none;
+    cursor: pointer;
+    transition: transform .1s;
+    color:white;
+}
+
+.filter img {
+    width: 20px;
 }

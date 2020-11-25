@@ -8,7 +8,7 @@ export type MovieResponseType = {
     budget: string;
     adult: boolean
     backdrop_path: string
-    genre_ids: Array<string>
+    genre_ids: Array<number>
     id: number
     original_language: string
     original_title: string
@@ -35,7 +35,6 @@ export type MovieImagesArrayResponseType = {
     vote_average: number
     vote_count: number
     width: number
-
 }
 export type MovieImagesResponseType = {
     backdrops: Array<MovieImagesArrayResponseType>
@@ -43,15 +42,28 @@ export type MovieImagesResponseType = {
     posters: Array<MovieImagesArrayResponseType>
 }
 
+
+export type FilterResponseType = {
+    page: number
+    results: Array<MovieResponseType>
+    total_pages: number
+    total_results: number
+}
+export type GenreType = {
+    id: number,
+    name: string
+}
+export type GenresResponseType = {
+    genres: Array<GenreType>
+}
 export const moviesAPI = {
     getTopMovies(page = 1) {
         return instance.get<RequestMovieType>(`/movie/top_rated?api_key=${apiKey}&page=${page}`).then(res => res.data)
-
     },
-      getMovieImages(movieId:number) {
+    getMovieImages(movieId: number) {
         return instance.get<MovieImagesResponseType>(`/movie/${movieId}/images?api_key=${apiKey}`).then(res => res.data)
     },
-     getSimilarMovies(movieId:number) {
+    getSimilarMovies(movieId: number) {
 
         return instance.get<RequestMovieType>(`/movie/${movieId}/similar?api_key=${apiKey}`).then(res => res.data)
     },
@@ -59,6 +71,15 @@ export const moviesAPI = {
     searchMovie(query = ' ', page = 1) {
         return instance.get(`/search/movie?api_key=${apiKey}&query=${query}&page=${page}`).then(res => res.data)
     },
+    getGenre() {
+        return instance.get<GenresResponseType>(`/genre/movie/list?api_key=${apiKey}`).then(res => res.data)
+    },
+    filterMovie(page = 1, genres: string) {
+        return instance.get<FilterResponseType>(`/discover/movie?api_key=${apiKey}&with_genres=${genres}&page=${page}`).then(res => res.data)
+    },
+    getMovie(movieId: number) {
+        return instance.get(`/movie/${movieId}?api_key=${apiKey}`).then(res => res)
+    }
 
 }
 

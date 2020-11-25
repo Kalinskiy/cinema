@@ -50,8 +50,9 @@
 }
 
 .descriptionContent {
-
-
+}
+.language {
+    text-transform: uppercase;
 }
 
 .descriptionTitle {

@@ -3,6 +3,10 @@ import style from './Movie.module.css'
 
 import noPoster from '../../../assets/noposter.png'
 import {NavLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {getMovieTC} from "../../../store/movies-reducer";
+import Preloader from "../Preloader/Preloader";
+import {AppStateType} from "../../../store/store";
 
 type TopMovieType = {
     title: string
@@ -13,10 +17,19 @@ type TopMovieType = {
     id: number
 }
 const Movie = (props: TopMovieType) => {
+    const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
+    const dispatch = useDispatch()
 
+
+    const getMovie = () => {
+        dispatch(getMovieTC(props.id))
+    }
+    if (initialized) {
+        return <Preloader/>
+    }
 
     return (
-        <div className={style.container}>
+        <div className={style.container} onClick={getMovie}>
 
             <div className={style.row1}>
                 <NavLink to={`/movie/${props.id}`}>
@@ -35,15 +48,15 @@ const Movie = (props: TopMovieType) => {
                     {props.overview}
                 </div>
                 <div className={style.voteAverage}>
-                  score:  {props.vote_average}
+                    score: {props.vote_average}
 
                 </div>
                 <NavLink to={`/movie/${props.id}`}>
-                <div className={style.watch}>
-                    <button className={style.watchButton}>
-                        WATCH
-                    </button>
-                </div>
+                    <div className={style.watch}>
+                        <button className={style.watchButton}>
+                            WATCH
+                        </button>
+                    </div>
                 </NavLink>
                 <div className={style.release}>
                     {props.release_date}

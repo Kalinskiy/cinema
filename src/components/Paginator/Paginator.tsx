@@ -2,7 +2,8 @@ import React from 'react';
 import style from './Paginator.module.css'
 import {useDispatch} from "react-redux";
 import cn from 'classnames'
-import {setCurrentPage, setNextPage, setPrevPage} from "../../store/search-reducer";
+import {setCurrentPage, setNextPage, setPrevPage} from "../../store/movies-reducer";
+
 
 type PaginatorPropsType = {
     totalPage: number
