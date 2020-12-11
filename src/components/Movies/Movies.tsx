@@ -1,14 +1,26 @@
-import React, {useEffect} from 'react';
-import style from './Movies.module.css'
+import React, {ChangeEvent, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../store/store";
 import Movie from "../common/MovieComponent/Movie";
 import {getTopMoviesTC, searchMovieTC, setCurrentPage, setFilterTC} from "../../store/movies-reducer";
-import Paginator from "../Paginator/Paginator";
 import {useHistory} from "react-router-dom";
+import Pagination from '@material-ui/lab/Pagination';
+import {Grid} from '@material-ui/core';
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
+const useStyles = makeStyles({
+    container:{
+        margin:'0 auto',
+        maxWidth:'100%'
 
+    },
+    pagination:{
+        padding:'20px 0'
+    }
+});
 const Movies = () => {
+
+    const classes = useStyles();
     const dispatch = useDispatch()
     const history = useHistory()
 
@@ -19,6 +31,9 @@ const Movies = () => {
     const searchName = useSelector<AppStateType, string>(state => state.movies.searchName)
     const filteredGenres = useSelector<AppStateType, Array<string>>(state => state.movies.filteredGenres)
 
+    const onChangePage = (event: ChangeEvent<unknown>, currentPage: number) => {
+        dispatch(setCurrentPage(currentPage))
+    }
 
     useEffect(() => {
         if (searchName.length) {
@@ -37,19 +52,22 @@ const Movies = () => {
             search: `?name=${searchName}&page=${currentPage}`
         })
     }, [searchName, currentPage])
+
     return (
-        <div className={style.container}>
-            {movies &&
-            <Paginator currentPage={currentPage ? currentPage : 0} totalPage={totalPage ? totalPage : 0}
-                       pagePortion={10}
-                       changePage={(page) => {
 
-                           dispatch(setCurrentPage(page))
-                       }
-                       }/>}
+        <Grid
+            className={classes.container}
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            spacing={3}
 
+        >
             {
+
                 movies.map(e =>
+                    <Grid item>
                     <Movie
                         key={e.id}
                         release_date={e.release_date}
@@ -58,11 +76,36 @@ const Movies = () => {
                         poster_path={e.poster_path}
                         vote_average={e.vote_average}
                         id={e.id}
-                    />)
+                    />
+                    </Grid>
+                )
+
             }
 
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+                className={classes.pagination}
+            >
+                {movies && !!totalPage &&
+                <Pagination
+                    color={'secondary'}
+                    page={currentPage ? currentPage : 0}
+                    count={totalPage ? totalPage : 0}
+                    siblingCount={2}
+                    onChange={onChangePage}
+                    showLastButton
+                    showFirstButton
+                    size={"large"}
+                />
+                }
+                {movies && !totalPage?<div>We could not find movie with such name</div>:null}
+            </Grid>
 
-        </div>
+        </Grid>
+
     );
 };
 

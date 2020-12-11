@@ -170,9 +170,9 @@ export const getMovieOverview = (overview: string) => ({
     payload: {overview}
 } as const);
 export const getMovieId = (movieId: number) => ({type: 'MOVIES/GET-MOVIE-ID', payload: {movieId}} as const);
-export const getMovieTitle = (originalTitle: string) => ({
+export const getMovieTitle = (title: string) => ({
     type: 'MOVIES/GET-MOVIE-TITLE',
-    payload: {originalTitle}
+    payload: {title}
 } as const);
 export const getMovieRunTime = (runtime: number) => ({type: 'MOVIES/GET-MOVIE-RUNTIME', payload: {runtime}} as const);
 export const getMoviePicture = (picture: string) => ({type: 'MOVIES/GET-MOVIE-PICTURE', payload: {picture}} as const);
@@ -249,6 +249,8 @@ export const getMoviesGenres = () => async (dispatch: any) => {
     try {
         const response = await moviesAPI.getGenre()
         dispatch(getGenres(response.genres))
+
+
     } catch (e) {
     } finally {
         dispatch(isInitialized(false))
@@ -272,8 +274,8 @@ export const searchMovieTC = (query: string, page: number) => async (dispatch: a
     }
 }
 export const setFilterTC = (page: number, genre: string) => async (dispatch: any) => {
-    dispatch(isInitialized(true))
 
+    dispatch(isInitialized(true))
     try {
         const response = await moviesAPI.filterMovie(page, genre)
         dispatch(setFilteredMovies(response.results))
@@ -292,7 +294,6 @@ export const getMovieTC = (movieId: number) => async (dispatch: any) => {
     dispatch(isInitialized(true))
     try {
         const response = await moviesAPI.getMovie(movieId)
-        console.log(response)
         dispatch(getMovieGenre(response.data.genres))
         dispatch(getMovieBudget(response.data.budget))
         dispatch(getMovieOverview(response.data.overview))
@@ -303,6 +304,7 @@ export const getMovieTC = (movieId: number) => async (dispatch: any) => {
         dispatch(getMovieRating(response.data.vote_average))
         dispatch(getMovieLanguage(response.data.original_language))
         dispatch(getMovieReleaseDate(response.data.release_date))
+        console.log(response)
 
 
     } catch (e) {

@@ -8,20 +8,65 @@ import noPoster from '../../../assets/noposter.png'
 import {getMovieImagesTC, getMovieTC, getSimilarMoviesTC} from "../../../store/movies-reducer";
 import Preloader from "../Preloader/Preloader";
 import SimilarMovies from '../SimilarMovies/SimilarMovies';
+import Grid from '@material-ui/core/Grid/Grid';
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import {Card} from "@material-ui/core";
+import Button from '@material-ui/core/Button/Button';
+import Typography from "@material-ui/core/Typography";
+import Link from '@material-ui/core/Link/Link';
+
+const useStyles = makeStyles(  {
+    container: {
+        margin: '0 auto',
+        width: '60%'
+    },
+    card: {
+        display: 'flex'
+    },
+    image: {
+        width: '250px',
+        height: '400px',
+
+    },
+    column2: {
+        width: '70%',
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '0 30px 30px 30px'
+    },
+    descriptionsItem: {
+        display: 'flex',
+        borderBottom: '1px solid rgba(147, 130, 130, 0.1)',
+        padding: '10px 0',
+    },
+    descriptionTitle: {
+        width: '180px'
+    },
+    allImages: {
+        display: 'flex',
+        flexDirection: 'row',
+        margin: '10px 10px 5px 0',
+    },
+    eachImage: {
+        width: '200px',
+        marginRight: '10px'
+    },
+    link:{
+        textAlign:'center'
+    }
+})
 
 
 const MovieCard = () => {
+    const classes = useStyles();
     const dispatch = useDispatch()
     const params = useParams<{ id: string }>()
-    const movieDetail = useSelector<AppStateType, Array<MovieResponseType>>(state => state.movies.movies)
+
     const images = useSelector<AppStateType, Array<MovieImagesArrayResponseType>>(state => state.movies.images)
     const similarMovies = useSelector<AppStateType, Array<any>>(state => state.movies.similarMovies)
     const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
-
-
     const overview = useSelector<AppStateType, string>(state => state.movies.overview)
     const title = useSelector<AppStateType, string>(state => state.movies.title)
-    const movieId = useSelector<AppStateType, number>(state => state.movies.movieId)
     const budget = useSelector<AppStateType, number>(state => state.movies.budget)
     const movieGenre = useSelector<AppStateType, Array<GenreType>>(state => state.movies.movieGenre)
     const runtime = useSelector<AppStateType, number>(state => state.movies.runtime)
@@ -48,95 +93,102 @@ const MovieCard = () => {
         return <Preloader/>
     }
     return (
-        <>
+        <div>
+            <Grid
+                container
+                direction="row"
+                justify="center"
+                alignItems="center"
+                className={classes.container}
+            >
 
-            <div className={style.container}>
-                <div className={style.photo}>
+                <Card className={classes.card}>
                     <img
                         src={`${picture ? `https://image.tmdb.org/t/p/w500/${picture}` : noPoster}`}
-                        alt=""/>
-                </div>
-                <div className={style.column2}>
+                        alt="" className={classes.image}/>
+                    <div className={classes.column2}>
 
-                    <div className={style.title}>
-                        {title}
-                    </div>
-                    <div className={style.descriptions}>
-                        <div className={style.descriptionsItem}>
-                            <div className={style.descriptionTitle}>Rating:</div>
-                            <div className={style.descriptionContent}>{rating}</div>
+                        <Typography variant="h4" align='center'>
+                            {title}
+                        </Typography>
+                        <div className={style.descriptions}>
+                            <Typography className={classes.descriptionsItem}>
+                                <div className={classes.descriptionTitle}> Rating:</div>
+                                {rating}
+                            </Typography>
+                            <Typography className={classes.descriptionsItem}>
+                                <div className={classes.descriptionTitle}>Release date:</div>
+                                {releaseDate}
+                            </Typography>
+                            {
+                                !!runtime &&
+                                <Typography className={classes.descriptionsItem}>
+                                    <div className={classes.descriptionTitle}>Runtime:</div>
+                                    {runtime}
+                                </Typography>
+                            }
+
+                            <Typography className={classes.descriptionsItem}>
+                                <div className={classes.descriptionTitle}>Original language:</div>
+                                <div style={{textTransform: 'uppercase'}}>{language}</div>
+                            </Typography>
+                            {
+                                !!budget &&
+                                <Typography className={classes.descriptionsItem}>
+                                    <div className={classes.descriptionTitle}>Budget:</div>
+                                    {budget}
+                                </Typography>
+                            }
+
+                            {
+                                !!movieGenre.length &&
+                                <Typography className={classes.descriptionsItem}>
+                                    <div className={classes.descriptionTitle}>Genre:</div>
+                                    {movieGenre.map(g => g.name).join(', ')}
+                                </Typography>
+                            }
+                            <Typography className={classes.descriptionsItem}>
+                                {overview}
+                            </Typography>
                         </div>
-                        <div className={style.descriptionsItem}>
-                            <div className={style.descriptionTitle}>Release date:</div>
-                            <div className={style.descriptionContent}>{releaseDate}</div>
-                        </div>
-                        {
-                            !!runtime &&
-                            <div className={style.descriptionsItem}>
-                                <div className={style.descriptionTitle}>Runtime:</div>
-                                <div className={style.descriptionContent}>{runtime}</div>
-                            </div>
-                        }
 
-                        <div className={style.descriptionsItem}>
-                            <div className={style.descriptionTitle}>Original language:</div>
-                            <div className={`${style.descriptionContent} ${style.language}`}>{language}</div>
-                        </div>
-                        {
-                            !!budget &&
-                            <div className={style.descriptionsItem}>
-                                <div className={style.descriptionTitle}>Budget:</div>
-                                <div className={style.descriptionContent}>{budget}</div>
-                            </div>
-                        }
 
-                        {
-                            !!movieGenre.length &&
-                            <div className={style.descriptionsItem}>
-                                <div className={style.descriptionTitle}>Genre:</div>
-                                <div className={style.descriptionContent}>{movieGenre.map(g => g.name).join(', ')}</div>
-
-                            </div>
-                        }
-
-                    </div>
-                    <div className={style.overview}>
-                        {overview}
-                    </div>
-                    <div className={style.watch}>
-                        <button className={style.watchButton}>
+                        <Button color='secondary' variant={"contained"} style={{width: '150px', margin: '20px 0'}}>
                             WATCH
-                        </button>
-                    </div>
-                    {images
-                    &&
-                    <div className={style.images}>
-                        {images.map(e => {
-                            return <div className={style.image}><img alt=''
-                                                                     src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}/>
-                            </div>
-                        }).slice(0, 3)}
+                        </Button>
 
-                    </div>}
-                    {
-                        images.length > 3
+                        {images
                         &&
-                        <NavLink to={`/${params.id}/gallery`} className={style.allGallery}>
-                            To all images
-                        </NavLink>
-                    }
-                </div>
+                        <div className={classes.allImages}>
+                            {images.map(e => {
+                                return <div><img alt='' src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}
+                                                 className={classes.eachImage}/>
+                                </div>
+                            }).slice(0, 4)}
 
-            </div>
+                        </div>}
+                        {
+                            images.length > 3
+                            &&
+                            <Link href={`/${params.id}/gallery`} className={classes.link}>
+                                <span>To all images</span>
+                            </Link>
+                        }
+                    </div>
+                </Card>
 
-            {
-                similarMovies.length
-                &&
-                <div>
-                    <SimilarMovies similarMovies={similarMovies}/>
-                </div>
-            }
-        </>
+            </Grid>
+            <Grid>
+
+                {
+                    !!similarMovies.length
+                    &&
+                    <div>
+                        <SimilarMovies similarMovies={similarMovies}/>
+                    </div>
+                }
+            </Grid>
+        </div>
     )
 
 }

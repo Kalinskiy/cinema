@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import './App.css';
 import style from './App.module.css'
 import Header from "./components/Header/Header";
 import {BrowserRouter, Route} from "react-router-dom";
@@ -22,14 +21,14 @@ function App() {
     }, [])
     useEffect(() => {
         dispatch(getMoviesGenres())
+
     }, [])
 
     return <>
         <BrowserRouter>
             <Header/>
 
-            <div className={style.container}>
-
+            <div style={{marginTop: '80px'}}>
 
                 <Route exact path='/' render={() => <Movies/>}/>
                 <Route path='/movie/:id' render={() => <MovieCard/>}/>

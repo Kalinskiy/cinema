@@ -21,27 +21,19 @@ const Filter = (props: FilterPropsType) => {
 
     const formik = useFormik({
         validate: (values) => {
-
         },
-        initialValues: {},
+        initialValues: {
+            action:false
+        },
         onSubmit: (values: any) => {
             const ids = genres.filter(g => values[g.name]).map(g => g.id).join(',')
-
             dispatch(setFilterTC(page, ids))
             dispatch(setFilteredId(ids))
+            console.log(values)
             props.closeModal()
         }
 
     })
-    // useEffect(()=>{
-    //     console.log(formik)
-    // }, [formik])
-    // useEffect(() => {
-    //     if (!filteredGenres.length) {
-    //         formik.resetForm({})
-    //     }
-    //
-    // }, [filteredGenres])
 
 
     return (

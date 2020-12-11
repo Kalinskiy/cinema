@@ -1,13 +1,38 @@
 import React, {useEffect} from 'react';
-import style from './Gallery.module.css'
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../../store/store";
 import {MovieImagesArrayResponseType} from "../../../api/api";
 import {getMovieImagesTC} from "../../../store/movies-reducer";
-import {NavLink, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import Preloader from "../Preloader/Preloader";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Link from '@material-ui/core/Link';
+import Button from '@material-ui/core/Button/Button';
+import Grid from '@material-ui/core/Grid/Grid';
 
+const useStyles = makeStyles({
+
+    container: {
+        margin: '0 auto',
+        width: '65%',
+        padding: 0
+    },
+    card: {
+        display: 'flex'
+    },
+    button: {
+        width: 150,
+        margin: '20px auto',
+        display: 'block'
+    },
+    image: {
+        minWidth: 400,
+        maxWidth: 400
+    }
+
+})
 const Gallery = () => {
+    const classes = useStyles();
     const dispatch = useDispatch()
     const params = useParams<{ id: string }>()
     const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
@@ -19,26 +44,30 @@ const Gallery = () => {
         return <Preloader/>
     }
     return (
-        <div className={style.container}>
+
+        <Grid
+            spacing={3}
+            className={classes.container}>
             {images.length
             &&
-            <div className={style.images}>
+            <Grid container>
                 {images.map(e => {
 
-                    return <div className={style.image}><img src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}/>
-                    </div>
+                    return <Grid item xs={12} sm={8} md={4} lg={4} xl={4}><img className={classes.image}
+                                                                               src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}/>
+                    </Grid>
                 })}
 
-            </div>
+            </Grid>
             }
-            <div className={style.back}>
-                <NavLink to={`/movie/${params.id}`}>
-                    <button>
+            <div>
+                <Link href={`/movie/${params.id}`} style={{textDecoration: 'none'}}>
+                    <Button color='secondary' variant={"contained"} className={classes.button}>
                         BACK
-                    </button>
-                </NavLink>
+                    </Button>
+                </Link>
             </div>
-        </div>
+        </Grid>
     );
 };
 

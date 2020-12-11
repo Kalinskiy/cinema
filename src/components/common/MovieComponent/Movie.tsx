@@ -1,12 +1,38 @@
 import React from 'react';
-import style from './Movie.module.css'
-
 import noPoster from '../../../assets/noposter.png'
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {getMovieTC} from "../../../store/movies-reducer";
 import Preloader from "../Preloader/Preloader";
 import {AppStateType} from "../../../store/store";
+import Card from '@material-ui/core/Card/Card';
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import {CardActionArea} from "@material-ui/core";
+import CardMedia from '@material-ui/core/CardMedia/CardMedia';
+import Typography from "@material-ui/core/Typography";
+import CardContent from '@material-ui/core/CardContent/CardContent';
+import CardActions from "@material-ui/core/CardActions";
+import Button from "@material-ui/core/Button";
+import Link from "@material-ui/core/Link";
+
+const useStyles = makeStyles({
+    root: {
+        maxWidth: 350,
+    },
+    buttons: {
+        justifyContent: 'space-around'
+    },
+    title: {
+        maxHeight: '35px',
+        minHeight: '35px',
+        textAlign: 'center',
+        overflow: 'hidden'
+    },
+    overview: {
+        maxHeight: '100px',
+        minHeight: '100px',
+    }
+});
 
 type TopMovieType = {
     title: string
@@ -17,6 +43,7 @@ type TopMovieType = {
     id: number
 }
 const Movie = (props: TopMovieType) => {
+    const classes = useStyles();
     const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
     const dispatch = useDispatch()
 
@@ -28,44 +55,54 @@ const Movie = (props: TopMovieType) => {
         return <Preloader/>
     }
 
+
     return (
-        <div className={style.container} onClick={getMovie}>
-
-            <div className={style.row1}>
-                <NavLink to={`/movie/${props.id}`}>
-                    <div className={style.img}>
-                        <img
-                            src={`${props.poster_path ? `https://image.tmdb.org/t/p/w500/${props.poster_path}` : noPoster}`}/>
-                    </div>
-                </NavLink>
-            </div>
-            <div className={style.row2}>
-
-                <div className={style.title}>
-                    <h3>{props.title}</h3>
-                </div>
-                <div className={style.overview}>
-                    {props.overview}
-                </div>
-                <div className={style.voteAverage}>
-                    score: {props.vote_average}
-
-                </div>
-                <NavLink to={`/movie/${props.id}`}>
-                    <div className={style.watch}>
-                        <button className={style.watchButton}>
-                            WATCH
-                        </button>
-                    </div>
-                </NavLink>
-                <div className={style.release}>
-                    {props.release_date}
-                </div>
-
-            </div>
+        <Card
+            className={classes.root}
+            onClick={getMovie}
 
 
-        </div>
+        >
+            <NavLink to={`/movie/${props.id}`}>
+                <CardActionArea>
+                    <CardMedia
+                        component="img"
+                        alt="Contemplative Reptile"
+                        height="375"
+                        width="250"
+                        image={`${props.poster_path ? `https://image.tmdb.org/t/p/w500/${props.poster_path}` : noPoster}`}
+                        title={props.title}
+
+                    />
+                </CardActionArea>
+            </NavLink>
+            <CardContent>
+                <Typography gutterBottom variant="h5" component="h2" className={classes.title}>
+
+                    {props.title.length > 25 ? `${props.title.slice(0, 20) + '...'}` : props.title}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p" className={classes.overview}>
+                    {props.overview.length > 200 ? `${props.overview.slice(0, 200) + '...'}` : props.overview}
+                </Typography>
+            </CardContent>
+
+            <CardActions className={classes.buttons}>
+
+                <Link href={`/movie/${props.id}`}>
+                    <Button size="medium" color="primary" variant={"contained"}>
+                        WATCH
+                    </Button>
+                </Link>
+                <Link style={{textDecoration:'none'}}>
+                    <Button size="medium" color="secondary" variant={"contained"}>
+                       ADD TO FAVORITES
+                    </Button>
+                </Link>
+
+            </CardActions>
+
+
+        </Card>
     );
 };
 
