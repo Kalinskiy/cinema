@@ -1,10 +1,14 @@
-import React, {useEffect} from "react";
+import React from "react";
 import style from "./Filter.module.css"
-import {Field, useFormik} from "formik";
+import {useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../store/store";
 import {GenreType} from "../../api/api";
-import {setFilteredId, setFilterTC} from "../../store/movies-reducer";
+import {setFilterTC} from "../../store/movies-reducer";
+import {Checkbox} from "@material-ui/core";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
 type FilterPropsType = {
     closeModal: () => void
@@ -14,7 +18,7 @@ type FilterPropsType = {
 const Filter = (props: FilterPropsType) => {
     const page = useSelector<AppStateType, number>(state => state.movies.currentPage)
     const genres = useSelector<AppStateType, Array<GenreType>>(state => state.movies.genres)
-    const filteredGenres = useSelector<AppStateType, any>(state => state.movies.filteredGenres)
+
 
     const dispatch = useDispatch()
 
@@ -22,14 +26,15 @@ const Filter = (props: FilterPropsType) => {
     const formik = useFormik({
         validate: (values) => {
         },
-        initialValues: {
-            action:false
-        },
+        initialValues: {},
         onSubmit: (values: any) => {
-            const ids = genres.filter(g => values[g.name]).map(g => g.id).join(',')
+            debugger
+            let ids = values.with_genres.join(',')
+
+
             dispatch(setFilterTC(page, ids))
-            dispatch(setFilteredId(ids))
-            console.log(values)
+
+
             props.closeModal()
         }
 
@@ -39,21 +44,33 @@ const Filter = (props: FilterPropsType) => {
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className={style.container}>
-                {genres.map(g => {
-                    return <div key={g.id} className={style.item}>
-                        <label htmlFor={String(g.id)}>{g.name}</label>
-                        <br/>
-                        {/*<Field type={'checkbox'}*/}
-                        {/*       {...formik.getFieldProps(g.name)}*/}
-                        {/*/>*/}
+                <Grid container
+                      direction="row"
+                      alignItems="center"
+                      spacing={1}
 
-                        <input type="checkbox" name='with_genres' value={g['id']} />
+                >
+                    {genres.map(g => {
+                        return <Grid item key={g.id}>
+                            <FormControlLabel style={{color: '#000000', minWidth:200}} key={g.id} className={style.item}
+                                              label={g['name']}
 
-                        <br/>
-                    </div>
-                })}
-                <button type="submit">Submit</button>
-                <button type="reset" onClick={props.closeModal}>Cancel</button>
+                                              control={
+                                                  <Checkbox onChange={formik.handleChange} name='with_genres'
+                                                            value={g['id']}/>
+                                              }
+
+                            />
+                        </Grid>
+
+
+                    })}
+                </Grid>
+
+                <div style={{width: '100%', padding: 10}}>
+                    <Button variant={"contained"} color={"primary"} type="submit">Submit</Button>
+                    <Button type="reset" color={"secondary"} onClick={props.closeModal}>Cancel</Button>
+                </div>
 
             </div>
         </form>

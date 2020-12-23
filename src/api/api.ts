@@ -40,6 +40,7 @@ export type MovieImagesResponseType = {
     backdrops: Array<MovieImagesArrayResponseType>
     id: null
     posters: Array<MovieImagesArrayResponseType>
+    file_path: string
 }
 
 
@@ -55,6 +56,11 @@ export type GenreType = {
 }
 export type GenresResponseType = {
     genres: Array<GenreType>
+}
+export type GetAuthTokenType = {
+    success: boolean,
+    expires_at: string
+    request_token: string
 }
 export const moviesAPI = {
     getTopMovies(page = 1) {
@@ -79,7 +85,11 @@ export const moviesAPI = {
     },
     getMovie(movieId: number) {
         return instance.get(`/movie/${movieId}?api_key=${apiKey}`).then(res => res)
-    }
+    },
+    getAuthToken(){
+        return instance.get<any>(`/authentication/token/new?api_key=${apiKey}`).then(res=>res.data)
+    },
+ 
 
 }
 

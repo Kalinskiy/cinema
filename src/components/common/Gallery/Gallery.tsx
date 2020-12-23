@@ -14,8 +14,13 @@ const useStyles = makeStyles({
 
     container: {
         margin: '0 auto',
-        width: '65%',
-        padding: 0
+        width: '80%',
+        padding: '20px 0'
+    },
+    wrapper:{
+        display:'flex',
+        justifyContent:'center',
+        alignItem:'center'
     },
     card: {
         display: 'flex'
@@ -26,8 +31,8 @@ const useStyles = makeStyles({
         display: 'block'
     },
     image: {
-        minWidth: 400,
-        maxWidth: 400
+        minWidth: 300,
+        maxWidth: 300
     }
 
 })
@@ -35,26 +40,31 @@ const Gallery = () => {
     const classes = useStyles();
     const dispatch = useDispatch()
     const params = useParams<{ id: string }>()
-    const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
+    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
     const images = useSelector<AppStateType, Array<MovieImagesArrayResponseType>>(state => state.movies.images)
     useEffect(() => {
         dispatch(getMovieImagesTC(parseInt(params.id)))
     }, [])
-    if (initialized) {
+    if (!initialized) {
         return <Preloader/>
     }
     return (
 
         <Grid
-            spacing={3}
+
             className={classes.container}>
             {images.length
             &&
-            <Grid container>
+            <Grid container
+                className={classes.wrapper}
+            >
                 {images.map(e => {
 
-                    return <Grid item xs={12} sm={8} md={4} lg={4} xl={4}><img className={classes.image}
-                                                                               src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}/>
+                    return <Grid item xs={12} sm={8} md={4} lg={3} xl={3}>
+
+                        <img className={classes.image}
+                             src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}/>
+
                     </Grid>
                 })}
 
@@ -62,7 +72,7 @@ const Gallery = () => {
             }
             <div>
                 <Link href={`/movie/${params.id}`} style={{textDecoration: 'none'}}>
-                    <Button color='secondary' variant={"contained"} className={classes.button}>
+                    <Button color='primary' variant={"contained"} className={classes.button}>
                         BACK
                     </Button>
                 </Link>

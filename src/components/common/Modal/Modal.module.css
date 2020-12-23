@@ -21,9 +21,12 @@
 }
 
 .modalContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
     background-color: #ffffff;
-    width: 40vw;
+    width: 30vw;
     transform: scale(0.5);
     transition: 0.5s all;
     /*display: flex;*/

@@ -1,11 +1,15 @@
 import React from 'react';
-import preloader from '../../../assets/preloader.svg'
+import preloaderLight from '../../../assets/preloader.svg'
 import style from './Preloader.module.css'
+import {useSelector} from "react-redux";
+import {AppStateType} from "../../../store/store";
 
 const Preloader = () => {
+
+    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
     return (
         <div className={style.container}>
-            <img src={preloader} alt=""/>
+            <img src={preloaderLight} alt=""/>
         </div>
     );
 };

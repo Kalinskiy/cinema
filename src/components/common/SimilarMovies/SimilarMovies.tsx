@@ -4,26 +4,32 @@ import React from 'react';
 import {MovieResponseType} from "../../../api/api";
 import SimilarMovie from "./SimilarMovie/SimilarMovie";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-
-const useStyles = makeStyles({
-    title: {
-        width:'100%',
-        textAlign:'center',
-        textTransform:'uppercase',
-        padding:'10px 0',
-        backgroundColor:'#F50057',
-        color:'#ffffff',
-        borderBottomRightRadius: '5px',
-        borderBottomLeftRadius: '5px',
+import {Theme} from "@material-ui/core";
+import {useSelector} from "react-redux";
+import {AppStateType} from "../../../store/store";
 
 
-    }
-});
 type SimilarMoviesPropsType = {
     similarMovies: Array<MovieResponseType>
 }
 
 const SimilarMovies = (props: SimilarMoviesPropsType) => {
+    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
+
+    const useStyles = makeStyles((theme: Theme) => ({
+        title: {
+            width: '100%',
+            textAlign: 'center',
+            textTransform: 'uppercase',
+            padding: '10px 0',
+            backgroundColor: darkMode ? theme.palette.secondary.dark : theme.palette.secondary.main,
+            color: '#ffffff',
+            borderBottomRightRadius: '5px',
+            borderBottomLeftRadius: '5px',
+
+
+        }
+    }))
     const classes = useStyles();
 
 
@@ -44,7 +50,7 @@ const SimilarMovies = (props: SimilarMoviesPropsType) => {
 
             {
                 props.similarMovies.map(item => {
-                    return <Grid item xs={12} sm={6} md={3} lg={2} xl={2} >
+                    return <Grid item xs={12} sm={6} md={3} lg={2} xl={2}>
                         <SimilarMovie
                             title={item.title}
                             image={item.poster_path}

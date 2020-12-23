@@ -7,11 +7,12 @@ import {useHistory} from "react-router-dom";
 import Pagination from '@material-ui/lab/Pagination';
 import {Grid} from '@material-ui/core';
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import {MovieResponseType} from "../../api/api";
 
 const useStyles = makeStyles({
     container:{
-        margin:'0 auto',
-        maxWidth:'100%'
+        margin:'0 auto !important',
+        maxWidth:'100%',
 
     },
     pagination:{
@@ -25,11 +26,12 @@ const Movies = () => {
     const history = useHistory()
 
 
-    const movies = useSelector<AppStateType, Array<any>>(state => state.movies.movies)
+    const movies = useSelector<AppStateType, Array<MovieResponseType>>(state => state.movies.movies)
     const totalPage = useSelector<AppStateType, number | null>(state => state.movies.totalPages)
     let currentPage = useSelector<AppStateType, number>(state => state.movies.currentPage)
     const searchName = useSelector<AppStateType, string>(state => state.movies.searchName)
     const filteredGenres = useSelector<AppStateType, Array<string>>(state => state.movies.filteredGenres)
+
 
     const onChangePage = (event: ChangeEvent<unknown>, currentPage: number) => {
         dispatch(setCurrentPage(currentPage))
@@ -76,6 +78,7 @@ const Movies = () => {
                         poster_path={e.poster_path}
                         vote_average={e.vote_average}
                         id={e.id}
+
                     />
                     </Grid>
                 )
@@ -99,6 +102,7 @@ const Movies = () => {
                     showLastButton
                     showFirstButton
                     size={"large"}
+
                 />
                 }
                 {movies && !totalPage?<div>We could not find movie with such name</div>:null}

@@ -2,7 +2,7 @@ import React from 'react';
 import noPoster from '../../../assets/noposter.png'
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {getMovieTC} from "../../../store/movies-reducer";
+import {addMovieFav, getMovieTC} from "../../../store/movies-reducer";
 import Preloader from "../Preloader/Preloader";
 import {AppStateType} from "../../../store/store";
 import Card from '@material-ui/core/Card/Card';
@@ -13,45 +13,76 @@ import Typography from "@material-ui/core/Typography";
 import CardContent from '@material-ui/core/CardContent/CardContent';
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
+import createStyles from '@material-ui/styles/createStyles/createStyles';
+import {Theme} from '@material-ui/core/styles/createMuiTheme';
 
-const useStyles = makeStyles({
-    root: {
-        maxWidth: 350,
-    },
-    buttons: {
-        justifyContent: 'space-around'
-    },
-    title: {
-        maxHeight: '35px',
-        minHeight: '35px',
-        textAlign: 'center',
-        overflow: 'hidden'
-    },
-    overview: {
-        maxHeight: '100px',
-        minHeight: '100px',
-    }
-});
 
-type TopMovieType = {
+type PropsType = {
     title: string
     overview: string
     poster_path: string
     release_date: string
     vote_average: number
     id: number
+
+
 }
-const Movie = (props: TopMovieType) => {
+const Movie = (props: PropsType) => {
+    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
+
+    const useStyles = makeStyles((theme: Theme) =>
+        createStyles({
+
+            root: {
+                maxWidth: 350,
+                overflow: 'visible',
+                backgroundColor: darkMode ? theme.palette.primary.dark : theme.palette.secondary.light
+            },
+            buttons: {
+                justifyContent: 'space-around'
+            },
+            title: {
+                maxHeight: '35px',
+                minHeight: '35px',
+                textAlign: 'center',
+                overflow: 'hidden'
+            },
+            overview: {
+                maxHeight: '100px',
+                minHeight: '100px',
+            },
+            vote: {
+                backgroundColor: darkMode ? theme.palette.primary.dark : theme.palette.primary.light,
+                width: 40,
+                height: 22,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                position: 'absolute',
+                top: 20,
+                left: -5,
+                borderRadius: 3
+
+
+            }
+
+        }),
+    );
+
+
     const classes = useStyles();
-    const initialized = useSelector<AppStateType, boolean>(state => state.movies.initialized)
+
+
+    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
+    const user = useSelector<AppStateType, { }>(state => state.app.user)
     const dispatch = useDispatch()
 
 
     const getMovie = () => {
         dispatch(getMovieTC(props.id))
     }
-    if (initialized) {
+    if (!initialized) {
         return <Preloader/>
     }
 
@@ -74,6 +105,7 @@ const Movie = (props: TopMovieType) => {
                         title={props.title}
 
                     />
+                    <div className={classes.vote}>{props.vote_average} </div>
                 </CardActionArea>
             </NavLink>
             <CardContent>
@@ -88,16 +120,16 @@ const Movie = (props: TopMovieType) => {
 
             <CardActions className={classes.buttons}>
 
-                <Link href={`/movie/${props.id}`}>
+                <NavLink to={`/movie/${props.id}`} style={{textDecoration: 'none'}}>
                     <Button size="medium" color="primary" variant={"contained"}>
                         WATCH
                     </Button>
-                </Link>
-                <Link style={{textDecoration:'none'}}>
-                    <Button size="medium" color="secondary" variant={"contained"}>
-                       ADD TO FAVORITES
+                </NavLink>
+                <NavLink to={'/'} style={{textDecoration: 'none'}}>
+                    <Button size="medium" color="secondary" variant={"contained"} disabled={!user} onClick={()=>dispatch(addMovieFav)}>
+                        ADD TO FAVORITES
                     </Button>
-                </Link>
+                </NavLink>
 
             </CardActions>
 

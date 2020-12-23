@@ -1,16 +1,52 @@
-import React, {useEffect} from 'react';
-import style from './App.module.css'
+import React, {useEffect, useState} from 'react';
 import Header from "./components/Header/Header";
-import {BrowserRouter, Route} from "react-router-dom";
+import {Route} from "react-router-dom";
 import {getMoviesGenres, getTopMoviesTC} from "./store/movies-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "./store/store";
 import Movies from "./components/Movies/Movies";
 import MovieCard from "./components/common/MovieCard/MovieCard";
 import Gallery from './components/common/Gallery/Gallery';
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import {Paper} from "@material-ui/core";
+import {lightBlue, pink} from "@material-ui/core/colors";
+import blueGrey from "@material-ui/core/colors/blueGrey";
+import {verifyAuth} from "./store/app-reducer";
+import Preloader from "./components/common/Preloader/Preloader";
 
 
 function App() {
+    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
+    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
+
+
+
+
+
+    const theme = createMuiTheme({
+        palette: {
+            type: darkMode ? 'dark' : 'light',
+            primary: {
+                light: lightBlue[900],
+                main: darkMode ? blueGrey[900] : lightBlue[900],
+                dark: blueGrey[900]
+            }, secondary: {
+                light: '#fff',
+                main: darkMode ? blueGrey[100] : pink["A700"],
+                dark: blueGrey[200]
+            }
+        },
+
+        overrides: {
+            MuiPaper: {
+                root: {
+                    backgroundColor: darkMode ? blueGrey[800] : '#fff'
+                }
+            },
+        }
+    })
+
+
     let page = useSelector<AppStateType, number>(state => state.movies.currentPage)
 
 
@@ -21,22 +57,34 @@ function App() {
     }, [])
     useEffect(() => {
         dispatch(getMoviesGenres())
-
     }, [])
+    useEffect(() => {
+        dispatch(verifyAuth())
+    }, [verifyAuth])
+
+
+    if (!initialized) {
+        return <Preloader/>
+    }
 
     return <>
-        <BrowserRouter>
-            <Header/>
+        <ThemeProvider theme={theme}>
+            <Paper style={{minHeight: '100vh'}}>
+                <Header
+                    darkMode={darkMode}
 
-            <div style={{marginTop: '80px'}}>
+                />
+
 
                 <Route exact path='/' render={() => <Movies/>}/>
                 <Route path='/movie/:id' render={() => <MovieCard/>}/>
                 <Route path='/:id/gallery' render={() => <Gallery/>}/>
 
-            </div>
-        </BrowserRouter>
+
+            </Paper>
+        </ThemeProvider>
     </>
 }
+
 
 export default App;
