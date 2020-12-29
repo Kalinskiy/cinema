@@ -3,7 +3,7 @@ import Search from "../../Search/Search";
 import Filter from "../Filter/Filter";
 import {ModalWithChildren} from "../common/Modal/Modal";
 import {useDispatch, useSelector} from "react-redux";
-import {getTopMoviesTC, setFilteredId} from "../../store/movies-reducer";
+import {getTopMoviesTC, setFilteredId, setIsData} from "../../store/movies-reducer";
 import {NavLink} from "react-router-dom";
 import {AppBar, IconButton} from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -18,6 +18,8 @@ import googleIcon from '../../assets/google.png'
 import {AppStateType} from "../../store/store";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import Badge from "@material-ui/core/Badge";
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -84,12 +86,12 @@ type PropsType = {
     darkMode: boolean
 }
 const Header = (props: PropsType) => {
-    debugger
+
     const dispatch = useDispatch()
     const classes = useStyles();
     const [isFilter, setIsFilter] = useState(false)
     const user = useSelector<AppStateType, any>(state => state.app.user)
-
+    const favoritesMoviesData = useSelector<AppStateType, any>(state => state.app.favoriteMovies)
 
 
     const handleChangeMode = () => {
@@ -121,12 +123,11 @@ const Header = (props: PropsType) => {
     }
 
 
-
     return (
         <div className={classes.grow}>
             <AppBar position={'static'} color={"primary"}>
                 <Toolbar>
-                    <NavLink to={'/'} style={{textDecoration: 'none'}}>
+                    <NavLink to={'/'} style={{textDecoration: 'none'}} onClick={() => dispatch(setIsData(true))}>
                         <IconButton
                             edge="start"
                             color="inherit"
@@ -194,7 +195,19 @@ const Header = (props: PropsType) => {
                                 style={{marginLeft: '30px', width: 25, cursor: 'pointer'}}
                             />
                     }
-
+                    <NavLink to={'/favorites'}>
+                        <IconButton color="inherit">
+                            <Badge badgeContent={Object.keys(favoritesMoviesData).length}
+                                   color="secondary"
+                                   anchorOrigin={{
+                                       vertical: 'bottom',
+                                       horizontal: 'right',
+                                   }}
+                            >
+                                <FavoriteIcon/>
+                            </Badge>
+                        </IconButton>
+                    </NavLink>
 
                 </Toolbar>
 

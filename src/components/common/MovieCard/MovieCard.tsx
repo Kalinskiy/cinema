@@ -2,11 +2,16 @@ import React, {useEffect} from 'react';
 import {NavLink, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../../store/store";
-import {GenreType, MovieImagesArrayResponseType, MovieResponseType} from "../../../api/api";
+import {GenreType} from "../../../api/api";
 import style from './MovieCard.module.css'
 import noPoster from '../../../assets/noposter.png'
-import {getMovieImagesTC, getMovieTC, getSimilarMoviesTC, MovieInitialStateType} from "../../../store/movies-reducer";
-import Preloader from "../Preloader/Preloader";
+import {
+    getMovieImagesTC,
+    getMovieTC,
+    getSimilarMoviesTC,
+    MovieInitialStateType,
+    setIsData
+} from "../../../store/movies-reducer";
 import SimilarMovies from '../SimilarMovies/SimilarMovies';
 import Grid from '@material-ui/core/Grid/Grid';
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -14,11 +19,13 @@ import {Card, Theme} from "@material-ui/core";
 import Button from '@material-ui/core/Button/Button';
 import Typography from "@material-ui/core/Typography";
 import blueGrey from "@material-ui/core/colors/blueGrey";
+import HeaderPreloader from "../Preloader/HeaderPreloader";
 
 
 const MovieCard = () => {
 
     const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
+    const isData = useSelector<AppStateType, boolean>(state => state.movies.isData)
     const useStyles = makeStyles((theme: Theme) => ({
 
         container: {
@@ -79,139 +86,132 @@ const MovieCard = () => {
     const classes = useStyles();
     const dispatch = useDispatch()
     const params = useParams<{ id: string }>()
-    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
 
-
-    type injectType = {
-        images: Array<MovieImagesArrayResponseType>
-        similarMovies: Array<any>
-        overview: string
-        title: string
-        budget: number
-        movieGenre: Array<GenreType>
-        runtime: number
-        picture: string
-        rating: number
-        language: string
-        releaseDate: string
-    }
-    const {images, similarMovies, overview, title,
-        budget, movieGenre, runtime, picture, rating, language, releaseDate} = useSelector<AppStateType, MovieInitialStateType>(state => state.movies)
+    const {
+        images, similarMovies, overview, title,
+        budget, movieGenre, runtime, picture, rating, language, releaseDate
+    } = useSelector<AppStateType, MovieInitialStateType>(state => state.movies)
 
 
     useEffect(() => {
-        dispatch(getMovieImagesTC(parseInt(params.id)))
-    }, [params.id])
 
-    useEffect(() => {
+
         dispatch(getSimilarMoviesTC(parseInt(params.id)))
+        dispatch(getMovieTC(parseInt(params.id)))
+        dispatch(getMovieImagesTC(parseInt(params.id)))
+        
+
+        return () => {
+            dispatch(setIsData(false))
+        }
+
+
     }, [params.id])
 
-    useEffect(() => {
-        dispatch(getMovieTC(parseInt(params.id)))
-    }, [])
 
-
-    if (!initialized) {
-        return <Preloader/>
+    if (!isData) {
+        return <HeaderPreloader/>
     }
+
     return (
-        <div>
-            <Grid
-                container
-                direction="row"
-                justify="center"
-                alignItems="center"
-                className={classes.container}
-            >
+        <>
+            {isData && <div>
+                <Grid
+                    container
+                    direction="row"
+                    justify="center"
+                    alignItems="center"
+                    className={classes.container}
+                >
 
-                <Card className={classes.card}>
-                    <img
-                        src={`${picture ? `https://image.tmdb.org/t/p/w500/${picture}` : noPoster}`}
-                        alt="" className={classes.image}/>
-                    <div className={classes.column2}>
+                    <Card className={classes.card}>
+                        <img
+                            src={`${picture ? `https://image.tmdb.org/t/p/w500/${picture}` : noPoster}`}
+                            alt="" className={classes.image}/>
+                        <div className={classes.column2}>
 
-                        <Typography variant="h4" align='center' style={{padding: 10}}>
-                            {title}
-                        </Typography>
-                        <div className={style.descriptions}>
-                            <Typography className={classes.descriptionsItem}>
-                                <div className={classes.descriptionTitle}> Rating:</div>
-                                {rating}
+                            <Typography variant="h4" align='center' style={{padding: 10}}>
+                                {title}
                             </Typography>
-                            <Typography className={classes.descriptionsItem}>
-                                <div className={classes.descriptionTitle}>Release date:</div>
-                                {releaseDate}
-                            </Typography>
-                            {
-                                !!runtime &&
+                            <div className={style.descriptions}>
                                 <Typography className={classes.descriptionsItem}>
-                                    <div className={classes.descriptionTitle}>Runtime:</div>
-                                    {runtime}
+                                    <div className={classes.descriptionTitle}> Rating:</div>
+                                    {rating}
                                 </Typography>
-                            }
-
-                            <Typography className={classes.descriptionsItem}>
-                                <div className={classes.descriptionTitle}>Original language:</div>
-                                <div style={{textTransform: 'uppercase'}}>{language}</div>
-                            </Typography>
-                            {
-                                !!budget &&
                                 <Typography className={classes.descriptionsItem}>
-                                    <div className={classes.descriptionTitle}>Budget:</div>
-                                    {budget}
+                                    <div className={classes.descriptionTitle}>Release date:</div>
+                                    {releaseDate}
                                 </Typography>
-                            }
+                                {
+                                    !!runtime &&
+                                    <Typography className={classes.descriptionsItem}>
+                                        <div className={classes.descriptionTitle}>Runtime:</div>
+                                        {runtime}
+                                    </Typography>
+                                }
 
-                            {
-                                !!movieGenre.length &&
                                 <Typography className={classes.descriptionsItem}>
-                                    <div className={classes.descriptionTitle}>Genre:</div>
-                                    {movieGenre.map((g:GenreType) => g.name).join(', ')}
+                                    <div className={classes.descriptionTitle}>Original language:</div>
+                                    <div style={{textTransform: 'uppercase'}}>{language}</div>
                                 </Typography>
-                            }
-                            <Typography className={classes.descriptionsItem}>
-                                {overview}
-                            </Typography>
-                        </div>
+                                {
+                                    !!budget &&
+                                    <Typography className={classes.descriptionsItem}>
+                                        <div className={classes.descriptionTitle}>Budget:</div>
+                                        {budget}
+                                    </Typography>
+                                }
+
+                                {
+                                    !!movieGenre.length &&
+                                    <Typography className={classes.descriptionsItem}>
+                                        <div className={classes.descriptionTitle}>Genre:</div>
+                                        {movieGenre.map((g: GenreType) => g.name).join(', ')}
+                                    </Typography>
+                                }
+                                <Typography className={classes.descriptionsItem}>
+                                    {overview}
+                                </Typography>
+                            </div>
 
 
-                        <Button color='primary' variant={"contained"} className={classes.button}>
-                            WATCH
-                        </Button>
+                            <Button color='primary' variant={"contained"} className={classes.button}>
+                                WATCH
+                            </Button>
 
-                        {images
-                        &&
-                        <div className={classes.allImages}>
-                            {images.map(e => {
-                                return <div><img alt='' src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}
-                                                 className={classes.eachImage}/>
-                                </div>
-                            }).slice(0, 4)}
-
-                        </div>}
-                        {
-                            images.length > 3
+                            {images
                             &&
-                            <NavLink to={`/${params.id}/gallery`} className={classes.link}>
-                                <span>To all images</span>
-                            </NavLink>
-                        }
-                    </div>
-                </Card>
+                            <div className={classes.allImages}>
+                                {images.map(e => {
+                                    return <div><img alt='' src={`https://image.tmdb.org/t/p/w500/${e.file_path}`}
+                                                     className={classes.eachImage}/>
+                                    </div>
+                                }).slice(0, 4)}
 
-            </Grid>
-            <Grid>
+                            </div>}
+                            {
+                                images.length > 3
+                                &&
+                                <NavLink to={`/${params.id}/gallery`} className={classes.link}>
+                                    <span>To all images</span>
+                                </NavLink>
+                            }
+                        </div>
+                    </Card>
 
-                {
-                    !!similarMovies.length
-                    &&
-                    <div>
-                        <SimilarMovies similarMovies={similarMovies}/>
-                    </div>
-                }
-            </Grid>
-        </div>
+                </Grid>
+                <Grid>
+
+                    {
+                        !!similarMovies.length
+                        &&
+                        <div>
+                            <SimilarMovies similarMovies={similarMovies}/>
+                        </div>
+                    }
+                </Grid>
+            </div>}
+        </>
     )
 
 }

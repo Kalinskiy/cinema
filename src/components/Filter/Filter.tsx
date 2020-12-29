@@ -18,6 +18,7 @@ type FilterPropsType = {
 const Filter = (props: FilterPropsType) => {
     const page = useSelector<AppStateType, number>(state => state.movies.currentPage)
     const genres = useSelector<AppStateType, Array<GenreType>>(state => state.movies.genres)
+    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
 
 
     const dispatch = useDispatch()
@@ -28,14 +29,9 @@ const Filter = (props: FilterPropsType) => {
         },
         initialValues: {},
         onSubmit: (values: any) => {
-            debugger
-            let ids = values.with_genres.join(',')
-
-
-            dispatch(setFilterTC(page, ids))
-
-
             props.closeModal()
+            let ids = values.with_genres.join(',')
+            dispatch(setFilterTC(page, ids))
         }
 
     })
@@ -52,14 +48,15 @@ const Filter = (props: FilterPropsType) => {
                 >
                     {genres.map(g => {
                         return <Grid item key={g.id}>
-                            <FormControlLabel style={{color: '#000000', minWidth:200}} key={g.id} className={style.item}
+                            <FormControlLabel style={{color: '#000000', minWidth: 200}} key={g.id}
+                                              className={style.item}
                                               label={g['name']}
 
                                               control={
-                                                  <Checkbox onChange={formik.handleChange} name='with_genres'
+                                                  <Checkbox style={{color: 'black'}} onChange={formik.handleChange}
+                                                            name='with_genres'
                                                             value={g['id']}/>
                                               }
-
                             />
                         </Grid>
 

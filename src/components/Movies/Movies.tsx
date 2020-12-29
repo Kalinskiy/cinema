@@ -8,15 +8,16 @@ import Pagination from '@material-ui/lab/Pagination';
 import {Grid} from '@material-ui/core';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {MovieResponseType} from "../../api/api";
+import {getFavoritesMovies} from "../../store/app-reducer";
 
 const useStyles = makeStyles({
-    container:{
-        margin:'0 auto !important',
-        maxWidth:'100%',
+    container: {
+        margin: '0 auto !important',
+        maxWidth: '100%',
 
     },
-    pagination:{
-        padding:'20px 0'
+    pagination: {
+        padding: '20px 0'
     }
 });
 const Movies = () => {
@@ -44,7 +45,10 @@ const Movies = () => {
             dispatch(setFilterTC(currentPage, String(filteredGenres)))
         } else {
             dispatch(getTopMoviesTC(currentPage))
+
         }
+
+        dispatch(getFavoritesMovies())
 
     }, [currentPage])
 
@@ -70,16 +74,16 @@ const Movies = () => {
 
                 movies.map(e =>
                     <Grid item>
-                    <Movie
-                        key={e.id}
-                        release_date={e.release_date}
-                        title={e.original_title}
-                        overview={e.overview}
-                        poster_path={e.poster_path}
-                        vote_average={e.vote_average}
-                        id={e.id}
-
-                    />
+                        <Movie
+                            key={e.id}
+                            release_date={e.release_date}
+                            title={e.original_title}
+                            overview={e.overview}
+                            poster_path={e.poster_path}
+                            vote_average={e.vote_average}
+                            id={e.id}
+                            movie={e}
+                        />
                     </Grid>
                 )
 
@@ -105,7 +109,7 @@ const Movies = () => {
 
                 />
                 }
-                {movies && !totalPage?<div>We could not find movie with such name</div>:null}
+                {movies && !totalPage ? <div>We could not find movie with such name</div> : null}
             </Grid>
 
         </Grid>

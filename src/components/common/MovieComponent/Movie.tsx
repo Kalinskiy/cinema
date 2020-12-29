@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import noPoster from '../../../assets/noposter.png'
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {addMovieFav, getMovieTC} from "../../../store/movies-reducer";
-import Preloader from "../Preloader/Preloader";
+import {setIsData, getMovieTC} from "../../../store/movies-reducer";
 import {AppStateType} from "../../../store/store";
 import Card from '@material-ui/core/Card/Card';
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -15,6 +14,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import createStyles from '@material-ui/styles/createStyles/createStyles';
 import {Theme} from '@material-ui/core/styles/createMuiTheme';
+import {addMovieToFavorite, removeMovieFromFavorite} from '../../../store/app-reducer';
 
 
 type PropsType = {
@@ -24,12 +24,13 @@ type PropsType = {
     release_date: string
     vote_average: number
     id: number
+    movie: any
 
 
 }
 const Movie = (props: PropsType) => {
-    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
 
+    const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
     const useStyles = makeStyles((theme: Theme) =>
         createStyles({
 
@@ -69,72 +70,99 @@ const Movie = (props: PropsType) => {
 
         }),
     );
-
-
-    const classes = useStyles();
-
-
-    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
-    const user = useSelector<AppStateType, { }>(state => state.app.user)
     const dispatch = useDispatch()
+    const classes = useStyles();
+    const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
+    const user = useSelector<AppStateType, {}>(state => state.app.user)
+    const favoritesMoviesData = useSelector<AppStateType, any>(state => state.app.favoriteMovies)
+
 
 
     const getMovie = () => {
         dispatch(getMovieTC(props.id))
     }
-    if (!initialized) {
-        return <Preloader/>
+
+    const addMovieToFavoriteHandler = (movie: any) => {
+        dispatch(addMovieToFavorite(movie))
     }
 
+    const removeMovieFromFavoriteHandler = (movie: any) => {
+        dispatch(removeMovieFromFavorite(movie))
+    }
 
     return (
-        <Card
-            className={classes.root}
-            onClick={getMovie}
+        <>
+            <Card
+                className={classes.root}
+                onClick={getMovie}
 
 
-        >
-            <NavLink to={`/movie/${props.id}`}>
-                <CardActionArea>
-                    <CardMedia
-                        component="img"
-                        alt="Contemplative Reptile"
-                        height="375"
-                        width="250"
-                        image={`${props.poster_path ? `https://image.tmdb.org/t/p/w500/${props.poster_path}` : noPoster}`}
-                        title={props.title}
+            >
+                <NavLink to={`/movie/${props.id}`}>
+                    <CardActionArea>
+                        <CardMedia
+                            component="img"
+                            alt="Contemplative Reptile"
+                            height="375"
+                            width="250"
+                            image={`${props.poster_path ? `https://image.tmdb.org/t/p/w500/${props.poster_path}` : noPoster}`}
+                            title={props.title}
 
-                    />
-                    <div className={classes.vote}>{props.vote_average} </div>
-                </CardActionArea>
-            </NavLink>
-            <CardContent>
-                <Typography gutterBottom variant="h5" component="h2" className={classes.title}>
-
-                    {props.title.length > 25 ? `${props.title.slice(0, 20) + '...'}` : props.title}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" component="p" className={classes.overview}>
-                    {props.overview.length > 200 ? `${props.overview.slice(0, 200) + '...'}` : props.overview}
-                </Typography>
-            </CardContent>
-
-            <CardActions className={classes.buttons}>
-
-                <NavLink to={`/movie/${props.id}`} style={{textDecoration: 'none'}}>
-                    <Button size="medium" color="primary" variant={"contained"}>
-                        WATCH
-                    </Button>
+                        />
+                        <div className={classes.vote}>{props.vote_average} </div>
+                    </CardActionArea>
                 </NavLink>
-                <NavLink to={'/'} style={{textDecoration: 'none'}}>
-                    <Button size="medium" color="secondary" variant={"contained"} disabled={!user} onClick={()=>dispatch(addMovieFav)}>
-                        ADD TO FAVORITES
-                    </Button>
-                </NavLink>
+                <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2" className={classes.title}>
 
-            </CardActions>
+                        {props.title.length > 25 ? `${props.title.slice(0, 20) + '...'}` : props.title}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p" className={classes.overview}>
+                        {props.overview.length > 200 ? `${props.overview.slice(0, 200) + '...'}` : props.overview}
+                    </Typography>
+                </CardContent>
+
+                <CardActions className={classes.buttons}>
+                    {
+                        user !== null
+                            ? favoritesMoviesData[props.id]
+                            ? <>
+                                <Button onClick={() => {
+                                    removeMovieFromFavoriteHandler(props.movie)
+                                }} size="medium" color="primary" variant={"contained"}>
+                                    Remove from Favorites
+                                </Button>
+                                <NavLink to={`/movie/${props.id}`}>
+                                    <Button color={'secondary'} variant={"contained"}>
+                                        WATCH
+                                    </Button>
+                                </NavLink>
+                            </>
+
+                            : <><Button onClick={() => {
+                                addMovieToFavoriteHandler(props.movie)
+                            }} size="medium" color="primary" variant={"contained"}>
+                                Add to Favorites
+                            </Button>
+                                <NavLink to={`/movie/${props.id}`}>
+                                    <Button color={'secondary'} variant={"contained"}>
+                                        WATCH
+                                    </Button>
+                                </NavLink>
+                            </>
 
 
-        </Card>
+                            : <Button disabled size="medium" color="secondary" variant={"contained"}>
+                                Add to Favorites
+                            </Button>
+                    }
+
+
+                </CardActions>
+
+
+            </Card>
+        </>
     );
 };
 

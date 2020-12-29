@@ -10,7 +10,7 @@ export type MovieInitialStateType = {
     title: string | null,
     movieId: number | null,
     budget: number | null,
-    movieGenre:  GenreType[]
+    movieGenre: GenreType[]
     runtime: number | null,
     rating: number | null
     releaseDate: string | null
@@ -29,7 +29,10 @@ export type MovieInitialStateType = {
     currentPage: number | null,
 
     filteredGenres: [],
-    filteredMovies: []
+    filteredMovies: [],
+
+    isData: boolean
+
 
 }
 
@@ -58,8 +61,9 @@ let initialState: MovieInitialStateType = {
     currentPage: 1,
 
     filteredGenres: [],
-    filteredMovies: []
+    filteredMovies: [],
 
+    isData: false
 
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -118,9 +122,7 @@ const moviesReducer = (state = initialState, action: any) => {
         case 'SEARCH/SET-SEARCH-NAME': {
             return {...state, searchName: action.payload.searchName}
         }
-        case 'SEARCH/SEARCH-MOVIE': {
-            return {...state, search: action.payload.search}
-        }
+
         case 'SEARCH/SET-TOTAL-PAGE': {
             return {...state, totalPages: action.payload.pages}
         }
@@ -145,6 +147,10 @@ const moviesReducer = (state = initialState, action: any) => {
         case 'MOVIES/GET-MOVIES-VOTES': {
             return {...state, votes: action.payload.votes}
         }
+        case 'MOVIES/IS-DATA': {
+
+            return {...state, isData: action.payload.isData}
+        }
 
 
         default:
@@ -162,7 +168,7 @@ export const getSimilarMovies = (similarMovies: any) => ({
     payload: {similarMovies}
 } as const);
 export const getGenres = (genres: any) => ({type: 'MOVIES/GET-GENRES', payload: {genres}} as const);
-export const getMovieGenre = (movieGenre: any) => ({type: 'MOVIES/GET-MOVIE-GENRE', payload: {movieGenre}} as const);
+export const getMovieGenre = (movieGenre: string) => ({type: 'MOVIES/GET-MOVIE-GENRE', payload: {movieGenre}} as const);
 export const getMovieBudget = (budget: number) => ({type: 'MOVIES/GET-MOVIE-BUDGET', payload: {budget}} as const);
 export const getMovieOverview = (overview: string) => ({
     type: 'MOVIES/GET-MOVIE-OVERVIEW',
@@ -185,22 +191,21 @@ export const getMovieReleaseDate = (releaseDate: string) => ({
     payload: {releaseDate}
 } as const);
 
-export const setSearchName = (searchName: any) => ({type: 'SEARCH/SET-SEARCH-NAME', payload: {searchName}} as const);
-export const searchMovies = (search: any) => ({type: 'SEARCH/SEARCH-MOVIE', payload: {search}} as const);
+export const setSearchName = (searchName: string) => ({type: 'SEARCH/SET-SEARCH-NAME', payload: {searchName}} as const);
 export const setTotalPage = (pages: number) => ({type: 'SEARCH/SET-TOTAL-PAGE', payload: {pages}} as const);
 export const setCurrentPage = (page: number) => ({type: 'SEARCH/SET-CURRENT-PAGE', payload: {page}} as const);
 export const setPrevPage = (page: number) => ({type: 'SEARCH/SET-PREVIOUS-PAGE', payload: {page}} as const);
 export const setNextPage = (page: number) => ({type: 'SEARCH/SET-NEXT-PAGE', payload: {page}} as const);
 export const setSearchError = (error: boolean) => ({type: 'SEARCH/SET-SEARCH-ERROR', payload: {error}} as const);
-export const setFilteredId = (filteredGenres: any) => ({
+export const setFilteredId = (filteredGenres: Array<string> | []) => ({
     type: 'FILTER/SET-FILTERED-ID',
     payload: {filteredGenres}
 } as const);
-export const setFilteredMovies = (filteredMovies: any) => ({
+export const setFilteredMovies = (filteredMovies: MovieResponseType[]) => ({
     type: 'FILTER/SET-FILTERED-MOVIES',
     payload: {filteredMovies}
 } as const);
-
+export const setIsData = (isData: boolean) => ({type: 'MOVIES/IS-DATA', payload: {isData}} as const);
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -208,29 +213,26 @@ export const setFilteredMovies = (filteredMovies: any) => ({
 
 
 export const getTopMoviesTC = (currentPage: number) => async (dispatch: any) => {
-
-
+    dispatch(isInitialized(false))
     try {
         const response = await moviesAPI.getTopMovies(currentPage)
-
-
         dispatch(getMovies(response.results))
         dispatch(setTotalPage(response.total_pages))
-        // dispatch(setCurrentPage(response.page))
-
     } catch (e) {
 
     } finally {
-
+        dispatch(isInitialized(true))
     }
 }
 export const getMovieImagesTC = (movieId: number) => async (dispatch: any) => {
+
 
     try {
         const response = await moviesAPI.getMovieImages(movieId)
         dispatch(setImages(response.backdrops))
     } catch (e) {
     } finally {
+        dispatch(setIsData(true))
 
     }
 }
@@ -241,6 +243,8 @@ export const getSimilarMoviesTC = (movieId: number) => async (dispatch: any) => 
         dispatch(getSimilarMovies(response.results))
     } catch (e) {
     } finally {
+        dispatch(setIsData(true))
+
 
     }
 }
@@ -268,14 +272,14 @@ export const searchMovieTC = (query: string, page: number) => async (dispatch: a
 
 
     } catch (e) {
-        dispatch(setSearchError(true))
+
     } finally {
 
     }
 }
 export const setFilterTC = (page: number, genre: string) => async (dispatch: any) => {
 
-    dispatch(isInitialized(false))
+
     try {
         const response = await moviesAPI.filterMovie(page, genre)
         dispatch(setFilteredMovies(response.results))
@@ -287,6 +291,7 @@ export const setFilterTC = (page: number, genre: string) => async (dispatch: any
     } catch (e) {
 
     } finally {
+
 
     }
 }
@@ -304,46 +309,15 @@ export const getMovieTC = (movieId: number) => async (dispatch: any) => {
         dispatch(getMovieRating(response.data.vote_average))
         dispatch(getMovieLanguage(response.data.original_language))
         dispatch(getMovieReleaseDate(response.data.release_date))
-        dispatch(isInitialized(true))
 
 
     } catch (e) {
 
     } finally {
+        dispatch(setIsData(true))
+
 
     }
-}
-
-export const getMoviesFavOnce = () => async (dispatch:any) => {
-    // @ts-ignore
-    const userId =  firebase.auth().currentUser.uid
-    const moviesColl = db.collection('users').doc(`${userId}`).collection('movies')
-    const doc = await moviesColl.get()
-    const documents = {}
-
-    doc.forEach((doc:any) => {
-        // @ts-ignore
-        documents[doc.id] = doc.data()
-    })
-    dispatch(getMovies(documents))
-}
-export const addFireBaseItem = async (movie:any) => {
-    // @ts-ignore
-    const userId = firebase.auth().currentUser.uid
-
-    await db.collection('users').doc(`${userId}`).collection('movies').doc(`${movie.id}`).set({
-        ...movie,
-        atTime: firebase.firestore.Timestamp.fromDate(new Date())
-    })
-}
-export const addMovieFav = (movie:any) => async (dispatch:any) => {
-    try {
-        await addFireBaseItem(movie)
-        dispatch(getMoviesFavOnce())
-    } catch (err) {
-        console.log(err)
-    }
-
 }
 
 

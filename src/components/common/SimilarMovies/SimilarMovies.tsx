@@ -16,6 +16,7 @@ type SimilarMoviesPropsType = {
 const SimilarMovies = (props: SimilarMoviesPropsType) => {
     const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
 
+
     const useStyles = makeStyles((theme: Theme) => ({
         title: {
             width: '100%',
@@ -49,7 +50,7 @@ const SimilarMovies = (props: SimilarMoviesPropsType) => {
 
 
             {
-                props.similarMovies.map(item => {
+             props.similarMovies.map(item => {
                     return <Grid item xs={12} sm={6} md={3} lg={2} xl={2}>
                         <SimilarMovie
                             title={item.title}
@@ -64,5 +65,4 @@ const SimilarMovies = (props: SimilarMoviesPropsType) => {
 
     );
 };
-
 export default SimilarMovies;

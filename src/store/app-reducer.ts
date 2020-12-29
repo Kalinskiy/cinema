@@ -1,12 +1,16 @@
 import firebase from "firebase";
 import myFirebase from "../firebase/firebase";
+import {db} from '../firebase/firebase'
+import {setIsData} from "./movies-reducer";
 
 type initialStateType = {
     initialized: boolean,
     darkMode: boolean,
     isAuth: boolean,
     user: {} | null,
-    isVerifying: boolean
+    isVerifying: boolean,
+
+    favoriteMovies: {} | null
 
 
 }
@@ -16,7 +20,7 @@ let initialState: initialStateType = {
     isAuth: false,
     user: null,
     isVerifying: false,
-
+    favoriteMovies: {},
 
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -39,7 +43,7 @@ const appReducer = (state = initialState, action: any) => {
         case 'APP/SET-USER': {
             return {...state, user: action.payload.user}
         }
-        case 'APP/VERIFY-SUCCESS':
+        case 'APP/VERIFY_SUCCESS':
             return {
                 ...state,
                 isVerifying: false
@@ -49,10 +53,16 @@ const appReducer = (state = initialState, action: any) => {
                 ...state,
                 isVerifying: true
             }
-            case 'APP/GET-THEME':
+        case 'APP/GET-THEME':
             return {
                 ...state,
                 darkMode: action.payload.darkMode
+            }
+
+        case 'LOGIN/GET-MOVIES-SUCCESS':
+            return {
+                ...state,
+                favoriteMovies: action.payload.movies,
             }
 
         default:
@@ -70,11 +80,14 @@ export const verifyRequest = () => ({type: 'APP/VERIFY-REQUEST'} as const)
 export const verifySuccess = () => ({type: 'APP/VERIFY_SUCCESS'} as const)
 export const receiveLogin = (user: any) => ({type: 'APP/SET-USER', payload: {user}} as const)
 export const localDate = (darkMode: boolean) => ({type: 'APP/GET-THEME', payload: {darkMode}} as const)
+export const setFavoritesMovies = (movies: any) => ({type: 'LOGIN/GET-MOVIES-SUCCESS', payload: {movies}} as const)
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //Thunks
 
 export const login = () => async (dispatch: any) => {
+    dispatch(isInitialized(false))
     const provider = new firebase.auth.GoogleAuthProvider()
     provider.addScope('profile')
     provider.addScope('email')
@@ -87,7 +100,7 @@ export const login = () => async (dispatch: any) => {
     } catch (e) {
 
     } finally {
-
+        dispatch(isInitialized(true))
     }
 }
 
@@ -100,19 +113,100 @@ export const logout = () => async (dispatch: any) => {
 export const verifyAuth = () => async (dispatch: any) => {
     dispatch(isInitialized(false))
 
-    dispatch(verifyRequest());
-    firebase
-        .auth()
-        .onAuthStateChanged( async user => {
-            console.log(user)
-            if (user !== null) {
-                 dispatch(receiveLogin(user))
-            }
-            dispatch(verifySuccess())
-           const local =  localStorage.getItem('darkMode')
-            local && dispatch(localDate(JSON.parse(local)))
-            dispatch(isInitialized(true))
-        })
+        dispatch(verifyRequest());
+        firebase
+            .auth()
+            .onAuthStateChanged(async user => {
+                console.log(user)
+                if (user !== null) {
+                    dispatch(receiveLogin(user))
+                    await dispatch(getFavoritesMovies())
+                    await dispatch(addMoviesListener())
+                }
+                dispatch(verifySuccess())
+                const local = localStorage.getItem('darkMode')
+                local && dispatch(localDate(JSON.parse(local)))
+                dispatch(isInitialized(true))
+
+            })
+
+
+
 }
+export const getFavoritesMovies = () => async (dispatch: any) => {
+
+    const userId = firebase.auth().currentUser?.uid
+    const moviesColl = db.collection('users').doc(`${userId}`).collection('movies')
+    const documents = {}
+    const doc = await moviesColl.get()
+
+
+    doc.forEach((doc) => {
+        // @ts-ignore
+        documents[doc.id] = doc.data()
+    })
+    dispatch(setFavoritesMovies(documents))
+
+}
+
+export const addMoviesListener = () => (dispatch: any) => {
+    // @ts-ignore
+    const userId = firebase.auth().currentUser.uid
+    const moviesColl = db.collection('users').doc(`${userId}`).collection('movies')
+
+
+    moviesColl.onSnapshot(async doc => {
+        const moviesDocs = await moviesColl.get()
+        const documents = {}
+
+        moviesDocs.forEach(doc => {
+            // @ts-ignore
+            documents[doc.id] = doc.data()
+        })
+        dispatch(setFavoritesMovies(documents))
+
+    })
+
+}
+
+export const deleteFirebaseItem = async (movie: any) => {
+    // @ts-ignore
+    const userId = firebase.auth().currentUser.uid
+    await db.collection('users').doc(`${userId}`).collection('movies').doc(`${movie.id}`).delete()
+}
+
+export const removeMovieFromFavorite = (movie: any) => async (dispatch: any) => {
+
+    try {
+        await deleteFirebaseItem(movie)
+        dispatch(getFavoritesMovies())
+    } catch (err) {
+        console.log(err)
+    }
+
+}
+
+export const addFireBaseItem = async (movie: any) => {
+
+    // @ts-ignore
+    const userId = firebase.auth().currentUser.uid
+
+    await db.collection('users').doc(`${userId}`).collection('movies').doc(`${movie.id}`).set({
+        ...movie,
+        atTime: firebase.firestore.Timestamp.fromDate(new Date())
+    })
+}
+
+export const addMovieToFavorite = (movie: any) => async (dispatch: any) => {
+
+    try {
+        await addFireBaseItem(movie)
+        dispatch(getFavoritesMovies())
+    } catch (err) {
+        console.log(err)
+    }
+
+}
+
 
 export default appReducer;

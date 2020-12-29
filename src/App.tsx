@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import Header from "./components/Header/Header";
 import {Route} from "react-router-dom";
-import {getMoviesGenres, getTopMoviesTC} from "./store/movies-reducer";
+import {getMoviesGenres, getTopMoviesTC, setIsData} from "./store/movies-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "./store/store";
 import Movies from "./components/Movies/Movies";
@@ -13,14 +13,13 @@ import {lightBlue, pink} from "@material-ui/core/colors";
 import blueGrey from "@material-ui/core/colors/blueGrey";
 import {verifyAuth} from "./store/app-reducer";
 import Preloader from "./components/common/Preloader/Preloader";
+import {Favorites} from "./components/Favorites/Favorites";
+import HeaderPreloader from "./components/common/Preloader/HeaderPreloader";
 
 
 function App() {
     const darkMode = useSelector<AppStateType, boolean>(state => state.app.darkMode)
     const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
-
-
-
 
 
     const theme = createMuiTheme({
@@ -48,40 +47,42 @@ function App() {
 
 
     let page = useSelector<AppStateType, number>(state => state.movies.currentPage)
+    let isVerifying = useSelector<AppStateType, boolean>(state => state.app.isVerifying)
+    const isData = useSelector<AppStateType, boolean>(state => state.movies.isData)
 
 
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getTopMoviesTC(page))
 
+
     }, [])
     useEffect(() => {
         dispatch(getMoviesGenres())
+        dispatch(setIsData(true))
+
     }, [])
     useEffect(() => {
         dispatch(verifyAuth())
+
     }, [verifyAuth])
 
 
-    if (!initialized) {
-        return <Preloader/>
-    }
-
     return <>
         <ThemeProvider theme={theme}>
-            <Paper style={{minHeight: '100vh'}}>
-                <Header
-                    darkMode={darkMode}
+            {!isVerifying ? < Paper style={{minHeight: '100vh'}}>
 
-                />
+                <Header darkMode={darkMode}/>
+                {!isData?   <HeaderPreloader/>:null}
 
 
                 <Route exact path='/' render={() => <Movies/>}/>
                 <Route path='/movie/:id' render={() => <MovieCard/>}/>
                 <Route path='/:id/gallery' render={() => <Gallery/>}/>
+                <Route path='/favorites' render={() => <Favorites/>}/>
 
 
-            </Paper>
+            </Paper> : <Preloader/>}
         </ThemeProvider>
     </>
 }
