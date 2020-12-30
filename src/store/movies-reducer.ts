@@ -1,7 +1,6 @@
 import {GenreType, MovieImagesResponseType, MovieResponseType, moviesAPI} from "../api/api";
 import {isInitialized} from "./app-reducer";
-import firebase from "firebase";
-import {db} from "../firebase/firebase";
+import {Dispatch} from "redux";
 
 
 export type MovieInitialStateType = {
@@ -88,41 +87,31 @@ const moviesReducer = (state = initialState, action: any) => {
         case 'MOVIES/GET-GENRES': {
             return {...state, genres: action.payload.genres}
         }
-        case 'MOVIES/GET-MOVIE-GENRE': {
+        case 'MOVIES/GET-MOVIES-VOTES': {
+            return {...state, votes: action.payload.votes}
+        }
+        case 'MOVIES/IS-DATA': {
 
-            return {...state, movieGenre: action.payload.movieGenre}
+            return {...state, isData: action.payload.isData}
         }
-        case 'MOVIES/GET-MOVIE-BUDGET': {
-            return {...state, budget: action.payload.budget}
-        }
-        case 'MOVIES/GET-MOVIE-OVERVIEW': {
-            return {...state, overview: action.payload.overview}
-        }
-        case 'MOVIES/GET-MOVIE-ID': {
-            return {...state, movieId: action.payload.movieId}
-        }
-        case 'MOVIES/GET-MOVIE-TITLE': {
-            return {...state, title: action.payload.title}
-        }
-        case 'MOVIES/GET-MOVIE-RUNTIME': {
-            return {...state, runtime: action.payload.runtime}
-        }
-        case 'MOVIES/GET-MOVIE-PICTURE': {
-            return {...state, picture: action.payload.picture}
-        }
-        case 'MOVIES/GET-MOVIE-RATING': {
-            return {...state, rating: action.payload.rating}
-        }
-        case 'MOVIES/GET-MOVIE-LANGUAGE': {
-            return {...state, language: action.payload.language}
-        }
-        case 'MOVIES/GET-MOVIE-RELEASE-DATE': {
-            return {...state, releaseDate: action.payload.releaseDate}
+        case 'MOVIES/GET-MOVIE-INFO': {
+            return {
+                ...state,
+                movieGenre: action.payload.movieGenre,
+                budget: action.payload.budget,
+                overview: action.payload.overview,
+                movieId: action.payload.movieId,
+                title: action.payload.title,
+                runtime: action.payload.runtime,
+                picture: action.payload.picture,
+                rating: action.payload.rating,
+                language: action.payload.language,
+                releaseDate: action.payload.releaseDate
+            }
         }
         case 'SEARCH/SET-SEARCH-NAME': {
             return {...state, searchName: action.payload.searchName}
         }
-
         case 'SEARCH/SET-TOTAL-PAGE': {
             return {...state, totalPages: action.payload.pages}
         }
@@ -144,14 +133,6 @@ const moviesReducer = (state = initialState, action: any) => {
         case 'FILTER/SET-FILTERED-MOVIES': {
             return {...state, movies: action.payload.filteredMovies}
         }
-        case 'MOVIES/GET-MOVIES-VOTES': {
-            return {...state, votes: action.payload.votes}
-        }
-        case 'MOVIES/IS-DATA': {
-
-            return {...state, isData: action.payload.isData}
-        }
-
 
         default:
             return state;
@@ -168,35 +149,6 @@ export const getSimilarMovies = (similarMovies: any) => ({
     payload: {similarMovies}
 } as const);
 export const getGenres = (genres: any) => ({type: 'MOVIES/GET-GENRES', payload: {genres}} as const);
-export const getMovieGenre = (movieGenre: string) => ({type: 'MOVIES/GET-MOVIE-GENRE', payload: {movieGenre}} as const);
-export const getMovieBudget = (budget: number) => ({type: 'MOVIES/GET-MOVIE-BUDGET', payload: {budget}} as const);
-export const getMovieOverview = (overview: string) => ({
-    type: 'MOVIES/GET-MOVIE-OVERVIEW',
-    payload: {overview}
-} as const);
-export const getMovieId = (movieId: number) => ({type: 'MOVIES/GET-MOVIE-ID', payload: {movieId}} as const);
-export const getMovieTitle = (title: string) => ({
-    type: 'MOVIES/GET-MOVIE-TITLE',
-    payload: {title}
-} as const);
-export const getMovieRunTime = (runtime: number) => ({type: 'MOVIES/GET-MOVIE-RUNTIME', payload: {runtime}} as const);
-export const getMoviePicture = (picture: string) => ({type: 'MOVIES/GET-MOVIE-PICTURE', payload: {picture}} as const);
-export const getMovieRating = (rating: number) => ({type: 'MOVIES/GET-MOVIE-RATING', payload: {rating}} as const);
-export const getMovieLanguage = (language: string) => ({
-    type: 'MOVIES/GET-MOVIE-LANGUAGE',
-    payload: {language}
-} as const);
-export const getMovieReleaseDate = (releaseDate: string) => ({
-    type: 'MOVIES/GET-MOVIE-RELEASE-DATE',
-    payload: {releaseDate}
-} as const);
-
-export const setSearchName = (searchName: string) => ({type: 'SEARCH/SET-SEARCH-NAME', payload: {searchName}} as const);
-export const setTotalPage = (pages: number) => ({type: 'SEARCH/SET-TOTAL-PAGE', payload: {pages}} as const);
-export const setCurrentPage = (page: number) => ({type: 'SEARCH/SET-CURRENT-PAGE', payload: {page}} as const);
-export const setPrevPage = (page: number) => ({type: 'SEARCH/SET-PREVIOUS-PAGE', payload: {page}} as const);
-export const setNextPage = (page: number) => ({type: 'SEARCH/SET-NEXT-PAGE', payload: {page}} as const);
-export const setSearchError = (error: boolean) => ({type: 'SEARCH/SET-SEARCH-ERROR', payload: {error}} as const);
 export const setFilteredId = (filteredGenres: Array<string> | []) => ({
     type: 'FILTER/SET-FILTERED-ID',
     payload: {filteredGenres}
@@ -206,6 +158,38 @@ export const setFilteredMovies = (filteredMovies: MovieResponseType[]) => ({
     payload: {filteredMovies}
 } as const);
 export const setIsData = (isData: boolean) => ({type: 'MOVIES/IS-DATA', payload: {isData}} as const);
+export const getMovieInfo = (movieGenre: string,
+                             budget: number,
+                             overview: string,
+                             movieId: number,
+                             title: string,
+                             runtime: number,
+                             picture: string,
+                             rating: number,
+                             language: string,
+                             releaseDate: string
+) => ({
+    type: 'MOVIES/GET-MOVIE-INFO',
+    payload: {
+        movieGenre,
+        budget,
+        overview,
+        movieId,
+        title,
+        runtime,
+        picture,
+        rating,
+        language,
+        releaseDate
+
+    }
+} as const)
+export const setSearchName = (searchName: string) => ({type: 'SEARCH/SET-SEARCH-NAME', payload: {searchName}} as const);
+export const setTotalPage = (pages: number) => ({type: 'SEARCH/SET-TOTAL-PAGE', payload: {pages}} as const);
+export const setCurrentPage = (page: number) => ({type: 'SEARCH/SET-CURRENT-PAGE', payload: {page}} as const);
+export const setPrevPage = (page: number) => ({type: 'SEARCH/SET-PREVIOUS-PAGE', payload: {page}} as const);
+export const setNextPage = (page: number) => ({type: 'SEARCH/SET-NEXT-PAGE', payload: {page}} as const);
+export const setSearchError = (error: boolean) => ({type: 'SEARCH/SET-SEARCH-ERROR', payload: {error}} as const);
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -224,9 +208,31 @@ export const getTopMoviesTC = (currentPage: number) => async (dispatch: any) => 
         dispatch(isInitialized(true))
     }
 }
-export const getMovieImagesTC = (movieId: number) => async (dispatch: any) => {
 
 
+export const InfoImagesSimilarThunk = (movieId: any) => async (dispatch: any) => {
+    dispatch(setIsData(false))
+    const response1 = await moviesAPI.getMovieImages(movieId)
+    const response2 = await moviesAPI.getSimilarMovies(movieId)
+    const response = await moviesAPI.getMovie(movieId)
+    dispatch(setImages(response1.backdrops))
+    dispatch(getSimilarMovies(response2.results))
+    dispatch(getMovieInfo(
+        response.data.genres,
+        response.data.budget,
+        response.data.overview,
+        response.data.id,
+        response.data.title,
+        response.data.runtime,
+        response.data.poster_path,
+        response.data.vote_average,
+        response.data.original_language,
+        response.data.release_date
+    ))
+    dispatch(setIsData(true))
+}
+
+export const getMovieImagesTC = (movieId: number) => async (dispatch: Dispatch) => {
     try {
         const response = await moviesAPI.getMovieImages(movieId)
         dispatch(setImages(response.backdrops))
@@ -236,81 +242,55 @@ export const getMovieImagesTC = (movieId: number) => async (dispatch: any) => {
 
     }
 }
-export const getSimilarMoviesTC = (movieId: number) => async (dispatch: any) => {
 
+export const getMoviesGenres = () => async (dispatch: Dispatch) => {
+    const response = await moviesAPI.getGenre()
     try {
-        const response = await moviesAPI.getSimilarMovies(movieId)
-        dispatch(getSimilarMovies(response.results))
-    } catch (e) {
-    } finally {
-        dispatch(setIsData(true))
-
-
-    }
-}
-export const getMoviesGenres = () => async (dispatch: any) => {
-
-    try {
-        const response = await moviesAPI.getGenre()
         dispatch(getGenres(response.genres))
-
-
     } catch (e) {
-    } finally {
 
+    } finally {
     }
 }
-export const searchMovieTC = (query: string, page: number) => async (dispatch: any) => {
-
+export const searchMovieTC = (query: string, page: number) => async (dispatch: Dispatch) => {
+    const response = await moviesAPI.searchMovie(query, page)
     try {
-        const response = await moviesAPI.searchMovie(query, page)
         dispatch(getMovies(response.results))
         dispatch(setTotalPage(response.total_pages))
         dispatch(setCurrentPage(response.page))
         dispatch(isInitialized(true))
         dispatch(setSearchError(false))
-
-
     } catch (e) {
 
     } finally {
-
     }
 }
-export const setFilterTC = (page: number, genre: string) => async (dispatch: any) => {
-
-
+export const setFilterTC = (page: number, genre: string) => async (dispatch: Dispatch) => {
+    const response = await moviesAPI.filterMovie(page, genre)
     try {
-        const response = await moviesAPI.filterMovie(page, genre)
         dispatch(setFilteredMovies(response.results))
-
         dispatch(setCurrentPage(response.page))
         dispatch(setTotalPage(response.total_pages))
-
-
     } catch (e) {
 
     } finally {
-
-
     }
 }
 export const getMovieTC = (movieId: number) => async (dispatch: any) => {
-
+    const response = await moviesAPI.getMovie(movieId)
     try {
-        const response = await moviesAPI.getMovie(movieId)
-        dispatch(getMovieGenre(response.data.genres))
-        dispatch(getMovieBudget(response.data.budget))
-        dispatch(getMovieOverview(response.data.overview))
-        dispatch(getMovieId(response.data.id))
-        dispatch(getMovieTitle(response.data.title))
-        dispatch(getMovieRunTime(response.data.runtime))
-        dispatch(getMoviePicture(response.data.poster_path))
-        dispatch(getMovieRating(response.data.vote_average))
-        dispatch(getMovieLanguage(response.data.original_language))
-        dispatch(getMovieReleaseDate(response.data.release_date))
-
-
+        dispatch(getMovieInfo(
+            response.data.genres,
+            response.data.budget,
+            response.data.overview,
+            response.data.id,
+            response.data.title,
+            response.data.runtime,
+            response.data.poster_path,
+            response.data.vote_average,
+            response.data.original_language,
+            response.data.release_date
+        ))
     } catch (e) {
 
     } finally {

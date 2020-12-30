@@ -64,6 +64,7 @@ function App() {
     }, [])
     useEffect(() => {
         dispatch(verifyAuth())
+        //что бы не было header preloader
 
     }, [verifyAuth])
 

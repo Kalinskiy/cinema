@@ -2,7 +2,7 @@ import React, {ChangeEvent, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../store/store";
 import Movie from "../common/MovieComponent/Movie";
-import {getTopMoviesTC, searchMovieTC, setCurrentPage, setFilterTC} from "../../store/movies-reducer";
+import {getTopMoviesTC, searchMovieTC, setCurrentPage, setFilterTC, setIsData} from "../../store/movies-reducer";
 import {useHistory} from "react-router-dom";
 import Pagination from '@material-ui/lab/Pagination';
 import {Grid} from '@material-ui/core';
@@ -45,9 +45,8 @@ const Movies = () => {
             dispatch(setFilterTC(currentPage, String(filteredGenres)))
         } else {
             dispatch(getTopMoviesTC(currentPage))
-
         }
-
+        dispatch(setIsData(true))
         dispatch(getFavoritesMovies())
 
     }, [currentPage])

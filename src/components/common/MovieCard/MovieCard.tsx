@@ -6,11 +6,8 @@ import {GenreType} from "../../../api/api";
 import style from './MovieCard.module.css'
 import noPoster from '../../../assets/noposter.png'
 import {
-    getMovieImagesTC,
-    getMovieTC,
-    getSimilarMoviesTC,
     MovieInitialStateType,
-    setIsData
+    setIsData, InfoImagesSimilarThunk
 } from "../../../store/movies-reducer";
 import SimilarMovies from '../SimilarMovies/SimilarMovies';
 import Grid from '@material-ui/core/Grid/Grid';
@@ -95,10 +92,10 @@ const MovieCard = () => {
 
     useEffect(() => {
 
-
-        dispatch(getSimilarMoviesTC(parseInt(params.id)))
-        dispatch(getMovieTC(parseInt(params.id)))
-        dispatch(getMovieImagesTC(parseInt(params.id)))
+        dispatch(InfoImagesSimilarThunk(params.id))
+        // dispatch(getSimilarMoviesTC(parseInt(params.id)))
+        // dispatch(getMovieTC(parseInt(params.id)))
+        // dispatch(getMovieImagesTC(parseInt(params.id)))
         
 
         return () => {

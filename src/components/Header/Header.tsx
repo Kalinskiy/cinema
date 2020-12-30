@@ -127,7 +127,7 @@ const Header = (props: PropsType) => {
         <div className={classes.grow}>
             <AppBar position={'static'} color={"primary"}>
                 <Toolbar>
-                    <NavLink to={'/'} style={{textDecoration: 'none'}} onClick={() => dispatch(setIsData(true))}>
+                    <NavLink to={'/'} style={{textDecoration: 'none'}}>
                         <IconButton
                             edge="start"
                             color="inherit"
