@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import noPoster from '../../../assets/noposter.png'
 import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {setIsData, getMovieTC} from "../../../store/movies-reducer";
+import {getMovieTC} from "../../../store/movies-reducer";
 import {AppStateType} from "../../../store/store";
 import Card from '@material-ui/core/Card/Card';
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -75,7 +75,6 @@ const Movie = (props: PropsType) => {
     const initialized = useSelector<AppStateType, boolean>(state => state.app.initialized)
     const user = useSelector<AppStateType, {}>(state => state.app.user)
     const favoritesMoviesData = useSelector<AppStateType, any>(state => state.app.favoriteMovies)
-
 
 
     const getMovie = () => {
